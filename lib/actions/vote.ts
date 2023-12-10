@@ -5,5 +5,5 @@ import createSupabaseServer from "../supabase/server";
 export async function listVotes() {
 	const supabase = await createSupabaseServer();
 
-	return supabase.from("vote").select("*,users(*)");
+	return supabase.from("vote").select("*,users(*)").eq("is_unlist", false);
 }

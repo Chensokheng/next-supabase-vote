@@ -36,6 +36,7 @@ export interface Database {
           created_by: string
           end_date: string
           id: string
+          is_unlist: boolean
           placeholder_options: Json
           title: string
         }
@@ -44,6 +45,7 @@ export interface Database {
           created_by?: string
           end_date: string
           id?: string
+          is_unlist?: boolean
           placeholder_options: Json
           title: string
         }
@@ -52,6 +54,7 @@ export interface Database {
           created_by?: string
           end_date?: string
           id?: string
+          is_unlist?: boolean
           placeholder_options?: Json
           title?: string
         }

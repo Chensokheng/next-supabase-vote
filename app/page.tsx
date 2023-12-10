@@ -1,93 +1,18 @@
 import { listVotes } from "@/lib/actions/vote";
-import { IVotes } from "@/lib/types";
+import { emojis, rings } from "@/lib/constant";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
 export default async function Page() {
 	const { data: votes } = await listVotes();
-
-	// console.log(data);
-
-	// const votes = [
-	// 	{
-	// 		id: 1,
-	// 		title: "Vote for Best Javascript Framework",
-	// 		created_at: new Date().toDateString(),
-	// 		emoji: "👋",
-	// 		author: {
-	// 			image_url:
-	// 				"https://avatars.githubusercontent.com/u/45727563?v=4",
-	// 			name: "Meak",
-	// 		},
-	// 	},
-	// 	{
-	// 		id: 2,
-
-	// 		title: "Vote for Best Programing Language",
-	// 		created_at: new Date().toDateString(),
-	// 		emoji: "🤔",
-	// 		author: {
-	// 			image_url: "https://avatars.githubusercontent.com/u/569861?v=4",
-	// 			name: "sachee",
-	// 		},
-	// 	},
-	// 	{
-	// 		id: 3,
-
-	// 		title: "Vote for Best Emoji",
-	// 		created_at: new Date().toDateString(),
-	// 		emoji: "🤖",
-
-	// 		author: {
-	// 			image_url:
-	// 				" https://avatars.githubusercontent.com/u/919717?v=4",
-	// 			name: "filiph",
-	// 		},
-	// 	},
-	// 	{
-	// 		id: 4,
-	// 		title: "Vote for Best Social Media",
-	// 		created_at: new Date().toDateString(),
-	// 		emoji: "📣",
-
-	// 		author: {
-	// 			image_url:
-	// 				"https://avatars.githubusercontent.com/u/52232579?v=4",
-	// 			name: "sokheng",
-	// 		},
-	// 	},
-	// ];
-
-	const rings = [
-		{
-			ring: "ring-green-500",
-			bg: "bg-green-500",
-		},
-		{
-			ring: "ring-indigo-500",
-			bg: "bg-indigo-500",
-		},
-		{
-			ring: "ring-pink-500",
-			bg: "bg-pink-500",
-		},
-		{
-			ring: "ring-yellow-500",
-			bg: "bg-yellow-500",
-		},
-
-		{
-			ring: "ring-blue-500",
-			bg: "bg-blue-500",
-		},
-	];
-
 	return (
 		<div className=" w-full mx-auto py-10 px-10 md:p-5 grid  grid-cols-1 md:grid-cols-2 xl:grid-cols-3 grid-flow-dense gap-y-20 gap-10 ">
 			{votes?.map(({ title, end_date, users, id }, index) => {
 				const { ring, bg } =
 					rings[Math.floor(Math.random() * rings.length)];
+				const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+
 				return (
 					<Link
 						href={"/vote/" + id}
@@ -118,7 +43,7 @@ export default async function Page() {
 									Until {new Date(end_date).toDateString()}
 								</p>
 								<span className=" absolute -top-8 right-0 text-3xl">
-									{"🤔"}
+									{emoji}
 								</span>
 							</div>
 							<div
