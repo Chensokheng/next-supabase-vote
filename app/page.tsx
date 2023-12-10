@@ -1,57 +1,63 @@
+import { listVotes } from "@/lib/actions/vote";
+import { IVotes } from "@/lib/types";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-export default function Page() {
-	const votes = [
-		{
-			id: 1,
-			title: "Vote for Best Javascript Framework",
-			created_at: new Date().toDateString(),
-			emoji: "👋",
-			author: {
-				image_url:
-					"https://avatars.githubusercontent.com/u/45727563?v=4",
-				name: "Meak",
-			},
-		},
-		{
-			id: 2,
+export default async function Page() {
+	const { data: votes } = await listVotes();
 
-			title: "Vote for Best Programing Language",
-			created_at: new Date().toDateString(),
-			emoji: "🤔",
-			author: {
-				image_url: "https://avatars.githubusercontent.com/u/569861?v=4",
-				name: "sachee",
-			},
-		},
-		{
-			id: 3,
+	// console.log(data);
 
-			title: "Vote for Best Emoji",
-			created_at: new Date().toDateString(),
-			emoji: "🤖",
+	// const votes = [
+	// 	{
+	// 		id: 1,
+	// 		title: "Vote for Best Javascript Framework",
+	// 		created_at: new Date().toDateString(),
+	// 		emoji: "👋",
+	// 		author: {
+	// 			image_url:
+	// 				"https://avatars.githubusercontent.com/u/45727563?v=4",
+	// 			name: "Meak",
+	// 		},
+	// 	},
+	// 	{
+	// 		id: 2,
 
-			author: {
-				image_url:
-					" https://avatars.githubusercontent.com/u/919717?v=4",
-				name: "filiph",
-			},
-		},
-		{
-			id: 4,
-			title: "Vote for Best Social Media",
-			created_at: new Date().toDateString(),
-			emoji: "📣",
+	// 		title: "Vote for Best Programing Language",
+	// 		created_at: new Date().toDateString(),
+	// 		emoji: "🤔",
+	// 		author: {
+	// 			image_url: "https://avatars.githubusercontent.com/u/569861?v=4",
+	// 			name: "sachee",
+	// 		},
+	// 	},
+	// 	{
+	// 		id: 3,
 
-			author: {
-				image_url:
-					"https://avatars.githubusercontent.com/u/52232579?v=4",
-				name: "sokheng",
-			},
-		},
-	];
+	// 		title: "Vote for Best Emoji",
+	// 		created_at: new Date().toDateString(),
+	// 		emoji: "🤖",
+
+	// 		author: {
+	// 			image_url:
+	// 				" https://avatars.githubusercontent.com/u/919717?v=4",
+	// 			name: "filiph",
+	// 		},
+	// 	},
+	// 	{
+	// 		id: 4,
+	// 		title: "Vote for Best Social Media",
+	// 		created_at: new Date().toDateString(),
+	// 		emoji: "📣",
+
+	// 		author: {
+	// 			image_url:
+	// 				"https://avatars.githubusercontent.com/u/52232579?v=4",
+	// 			name: "sokheng",
+	// 		},
+	// 	},
+	// ];
 
 	const rings = [
 		{
@@ -79,7 +85,7 @@ export default function Page() {
 
 	return (
 		<div className=" w-full mx-auto py-10 px-10 md:p-5 grid  grid-cols-1 md:grid-cols-2 xl:grid-cols-3 grid-flow-dense gap-y-20 gap-10 ">
-			{votes.map(({ title, created_at, emoji, author, id }, index) => {
+			{votes?.map(({ title, end_date, users, id }, index) => {
 				const { ring, bg } =
 					rings[Math.floor(Math.random() * rings.length)];
 				return (
@@ -92,15 +98,15 @@ export default function Page() {
 							<div className=" border border-zinc-600 rounded-md p-5 space-y-3 bg-zinc-800 group-hover:translate-x-3 group-hover:translate-y-3 transition-all relative">
 								<div className="flex items-center gap-2">
 									<Image
-										src={author.image_url}
-										alt={author.name}
+										src={users?.avatar_url!}
+										alt={users?.user_name!}
 										width={40}
 										height={40}
 										className={`rounded-full ring-2 ${ring}`}
 									/>
 									<div>
 										<h1 className=" text-base">
-											{author.name}
+											{users?.user_name}
 										</h1>
 									</div>
 								</div>
@@ -109,10 +115,10 @@ export default function Page() {
 									{title}
 								</h1>
 								<p className="tex-sm text-gray-400">
-									Until {created_at}
+									Until {new Date(end_date).toDateString()}
 								</p>
 								<span className=" absolute -top-8 right-0 text-3xl">
-									{emoji}
+									{"🤔"}
 								</span>
 							</div>
 							<div
