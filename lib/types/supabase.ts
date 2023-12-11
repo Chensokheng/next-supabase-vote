@@ -68,6 +68,38 @@ export interface Database {
           }
         ]
       }
+      vote_log: {
+        Row: {
+          created_at: string
+          id: string
+          option: string
+          user_id: string
+          vote_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          option: string
+          user_id: string
+          vote_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          option?: string
+          user_id?: string
+          vote_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vote_log_vote_id_fkey"
+            columns: ["vote_id"]
+            isOneToOne: false
+            referencedRelation: "vote"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       vote_options: {
         Row: {
           options: Json
@@ -96,10 +128,16 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
+      is_voted: {
+        Args: {
+          target_id: string
+        }
+        Returns: boolean
+      }
       update_vote: {
         Args: {
-          key: string
-          vote_id: string
+          update_id: string
+          option: string
         }
         Returns: undefined
       }

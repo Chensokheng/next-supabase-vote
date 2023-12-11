@@ -10,3 +10,14 @@ export function nextWeek() {
 	nextWeekDate.setDate(currentDate.getDate() + 7);
 	return nextWeekDate;
 }
+
+export function sortObject(object: { [key: string]: number }) {
+	const sortedKeys = Object.keys(object).sort();
+
+	// Create a new object with sorted keys
+	const sortedVote: { [key: string]: number } = {};
+	sortedKeys.forEach((key) => {
+		sortedVote[key] = object[key];
+	});
+	return sortedVote;
+}

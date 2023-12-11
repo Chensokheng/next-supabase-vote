@@ -15,7 +15,7 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
-import { useRef, useState } from "react";
+import { useRef, useState, useTransition } from "react";
 import { Input } from "./ui/input";
 import { CalendarIcon, TrashIcon } from "@radix-ui/react-icons";
 import toast from "react-hot-toast";
@@ -23,9 +23,10 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { cn, nextWeek } from "@/lib/utils";
 import { format } from "date-fns";
 import { Calendar } from "./ui/calendar";
+import { createVote } from "@/lib/actions/vote";
 
 const FormSchema = z.object({
-	voteOptions: z
+	placeholder_options: z
 		.array(z.string())
 		.refine((value) => value.length >= 2 && value.length <= 6, {
 			message:
@@ -35,10 +36,12 @@ const FormSchema = z.object({
 		.string()
 		.min(5, { message: "Title has a minimum characters of 5" }),
 	is_unlist: z.boolean().default(false),
-	endDate: z.date(),
+	end_date: z.date(),
 });
 
 export default function VoteForm() {
+	const [isPending, startTransition] = useTransition();
+
 	const optionRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 
 	const [options, setOptions] = useState<{ id: string; label: string }[]>([]);
@@ -48,13 +51,13 @@ export default function VoteForm() {
 		defaultValues: {
 			title: "",
 			is_unlist: false,
-			voteOptions: [],
+			placeholder_options: [],
 		},
 	});
 
 	function addOptions() {
 		if (optionRef.current.value.trim())
-			form.setValue("voteOptions", [
+			form.setValue("placeholder_options", [
 				...options.map((option) => option.id),
 				optionRef.current.value,
 			]);
@@ -65,14 +68,19 @@ export default function VoteForm() {
 		optionRef.current.value = "";
 	}
 
-	function onSubmit(data: z.infer<typeof FormSchema>) {
-		const voteOptions: { [key: string]: number } = {};
-		data.voteOptions.forEach((vote) => {
-			voteOptions[vote] = 0;
+	async function onSubmit(data: z.infer<typeof FormSchema>) {
+		const placeholder_options: { [key: string]: number } = {};
+		data.placeholder_options.forEach((option) => {
+			placeholder_options[option] = 0;
 		});
 
-		console.log(JSON.stringify({ ...data, voteOptions }));
-		toast.success("Successfully Create!");
+		const insertData = { ...data, placeholder_options };
+
+		toast.promise(createVote(insertData), {
+			loading: "creating...",
+			success: "Successfully create a vote",
+			error: "Fail to create vote",
+		});
 	}
 
 	return (
@@ -118,7 +126,7 @@ export default function VoteForm() {
 				/>
 				<FormField
 					control={form.control}
-					name="voteOptions"
+					name="placeholder_options"
 					render={() => (
 						<FormItem>
 							<div className="mb-4">
@@ -135,7 +143,7 @@ export default function VoteForm() {
 								<FormField
 									key={item.id}
 									control={form.control}
-									name="voteOptions"
+									name="placeholder_options"
 									render={({ field }) => {
 										return (
 											<FormItem
@@ -209,7 +217,7 @@ export default function VoteForm() {
 				/>
 				<FormField
 					control={form.control}
-					name="endDate"
+					name="end_date"
 					render={({ field }) => (
 						<FormItem className="flex flex-col">
 							<FormLabel>End date</FormLabel>

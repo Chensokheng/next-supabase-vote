@@ -1,5 +1,6 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { off } from "process";
 
 export async function middleware(request: NextRequest) {
 	const { pathname } = request.nextUrl;
@@ -56,8 +57,11 @@ export async function middleware(request: NextRequest) {
 		}
 	);
 
-	await supabase.auth.getSession();
-	await supabase.auth.getSession();
+	const { data } = await supabase.auth.getSession();
+
+	if (!data.session && pathname.startsWith("/vote")) {
+		return NextResponse.redirect(new URL("/auth", request.url));
+	}
 }
 
 export const config = {

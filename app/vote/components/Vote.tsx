@@ -1,21 +1,78 @@
 "use client";
+import { createSupabaseBrower } from "@/lib/supabase/client";
+import { IVoteLog } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
-import React, { useMemo, useState } from "react";
-import TimeCountDown from "./TimeCountDown";
+import { revalidatePath } from "next/cache";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useMemo, useState } from "react";
+import toast from "react-hot-toast";
 
-export default function Vote() {
-	const voteDetail = {
-		angular: 0,
-		react: 0,
-		Javascript: 0,
+export default function Vote({
+	id,
+	options,
+	vote_log,
+	is_expired,
+}: {
+	id: string;
+	options: { [key: string]: number };
+	vote_log: IVoteLog;
+	is_expired: boolean;
+}) {
+	const supabase = createSupabaseBrower();
+	const router = useRouter();
+
+	useEffect(() => {
+		const channel = supabase
+			.channel(id)
+			.on(
+				"postgres_changes",
+				{
+					event: "UPDATE",
+					schema: "public",
+					table: "vote_options",
+					filter: "vote_id=eq." + id,
+				},
+				(payload) => {
+					setVote(payload.new.options);
+				}
+			)
+			.subscribe();
+		return () => {
+			channel.unsubscribe();
+		};
+		// eslint-disable-next-line
+	}, []);
+
+	const [vote, setVote] = useState(options);
+
+	const castVote = async (option: string) => {
+		if (vote_log) {
+			return null;
+		}
+
+		if (is_expired) {
+			return toast.error("Vote is expired");
+		} else {
+			toast.promise(rpcUpdateVote(option), {
+				loading: "Voting for " + option,
+				success: "Successfully vote for " + option,
+				error: "Fail to vote for " + option,
+			});
+		}
 	};
-	const [vote, setVote] = useState(voteDetail);
 
-	const castVote = (key: string) => {
-		const currentVote = { ...vote };
-		currentVote[key as keyof typeof vote] += 5;
-		setVote(currentVote);
+	const rpcUpdateVote = async (option: string) => {
+		let { error } = await supabase.rpc("update_vote", {
+			update_id: id,
+			option,
+		});
+		// call to supabase admin
+		if (error) {
+			throw "Fail to update vote";
+		} else {
+			router.refresh();
+		}
 	};
 
 	const highestKey = useMemo(() => {
@@ -76,9 +133,19 @@ export default function Vote() {
 					);
 				})}
 			</div>
-			<h1 className="text-gray-400 flex items-center gap-2">
-				<InfoCircledIcon /> You can vote up to five times
-			</h1>
+			{vote_log && (
+				<div className="flex items-center gap-2 text-gray-400">
+					<InfoCircledIcon />
+					<h1 className="text-lg ">
+						You voted for{" "}
+						<span className="text-yellow-500 font-bold">
+							{vote_log?.option}
+						</span>{" "}
+						on {new Date(vote_log?.created_at!).toDateString()}{" "}
+						{new Date(vote_log?.created_at!).toLocaleTimeString()}
+					</h1>
+				</div>
+			)}
 		</div>
 	);
 }

@@ -14,16 +14,6 @@ export default function LoginForm() {
 			},
 		});
 	};
-	const getVote = async () => {
-		console.log("-----");
-		let { data, error } = await supabase.rpc("get_votes4");
-		if (error) console.log(error);
-		else console.log(data);
-	};
-
-	useEffect(() => {
-		getVote();
-	}, []);
 
 	return (
 		<Button

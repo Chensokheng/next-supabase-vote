@@ -20,6 +20,7 @@ export default async function RootLayout({
 }: {
 	children: React.ReactNode;
 }) {
+	// TODO: removet this
 	const supabase = await createSupabaseServer();
 	const { data } = await supabase.auth.getUser();
 
