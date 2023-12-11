@@ -9,6 +9,42 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      test: {
+        Row: {
+          created_at: string
+          id: string
+          text: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          text?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          text?: string | null
+        }
+        Relationships: []
+      }
+      test2: {
+        Row: {
+          created_at: string
+          id: string
+          text: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          text?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          text?: string | null
+        }
+        Relationships: []
+      }
       users: {
         Row: {
           avatar_url: string | null
@@ -37,7 +73,6 @@ export interface Database {
           end_date: string
           id: string
           is_unlist: boolean
-          placeholder_options: Json
           title: string
         }
         Insert: {
@@ -46,7 +81,6 @@ export interface Database {
           end_date: string
           id?: string
           is_unlist?: boolean
-          placeholder_options: Json
           title: string
         }
         Update: {
@@ -55,7 +89,6 @@ export interface Database {
           end_date?: string
           id?: string
           is_unlist?: boolean
-          placeholder_options?: Json
           title?: string
         }
         Relationships: [
@@ -128,11 +161,30 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
+      create_vote: {
+        Args: {
+          options: Json
+          title: string
+          is_unlist: boolean
+          end_date: string
+        }
+        Returns: string
+      }
+      is_expired: {
+        Args: {
+          vote_id: string
+        }
+        Returns: boolean
+      }
       is_voted: {
         Args: {
           target_id: string
         }
         Returns: boolean
+      }
+      test_insert: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
       update_vote: {
         Args: {

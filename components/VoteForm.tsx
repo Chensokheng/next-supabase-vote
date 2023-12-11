@@ -26,7 +26,7 @@ import { Calendar } from "./ui/calendar";
 import { createVote } from "@/lib/actions/vote";
 
 const FormSchema = z.object({
-	placeholder_options: z
+	vote_options: z
 		.array(z.string())
 		.refine((value) => value.length >= 2 && value.length <= 6, {
 			message:
@@ -40,8 +40,6 @@ const FormSchema = z.object({
 });
 
 export default function VoteForm() {
-	const [isPending, startTransition] = useTransition();
-
 	const optionRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 
 	const [options, setOptions] = useState<{ id: string; label: string }[]>([]);
@@ -51,13 +49,13 @@ export default function VoteForm() {
 		defaultValues: {
 			title: "",
 			is_unlist: false,
-			placeholder_options: [],
+			vote_options: [],
 		},
 	});
 
 	function addOptions() {
 		if (optionRef.current.value.trim())
-			form.setValue("placeholder_options", [
+			form.setValue("vote_options", [
 				...options.map((option) => option.id),
 				optionRef.current.value,
 			]);
@@ -69,17 +67,15 @@ export default function VoteForm() {
 	}
 
 	async function onSubmit(data: z.infer<typeof FormSchema>) {
-		const placeholder_options: { [key: string]: number } = {};
-		data.placeholder_options.forEach((option) => {
-			placeholder_options[option] = 0;
+		const vote_options: { [key: string]: number } = {};
+		data.vote_options.forEach((option) => {
+			vote_options[option] = 0;
 		});
-
-		const insertData = { ...data, placeholder_options };
-
+		const insertData = { ...data, vote_options };
 		toast.promise(createVote(insertData), {
 			loading: "creating...",
 			success: "Successfully create a vote",
-			error: "Fail to create vote",
+			error: (err) => err.toString(),
 		});
 	}
 
@@ -126,7 +122,7 @@ export default function VoteForm() {
 				/>
 				<FormField
 					control={form.control}
-					name="placeholder_options"
+					name="vote_options"
 					render={() => (
 						<FormItem>
 							<div className="mb-4">
@@ -143,7 +139,7 @@ export default function VoteForm() {
 								<FormField
 									key={item.id}
 									control={form.control}
-									name="placeholder_options"
+									name="vote_options"
 									render={({ field }) => {
 										return (
 											<FormItem
@@ -250,8 +246,8 @@ export default function VoteForm() {
 										selected={field.value}
 										onSelect={field.onChange}
 										disabled={(date) =>
-											date < new Date() ||
-											date > nextWeek()
+											date > nextWeek() ||
+											date < new Date()
 										}
 										initialFocus
 									/>

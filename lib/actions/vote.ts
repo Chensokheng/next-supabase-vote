@@ -15,27 +15,24 @@ export async function listVotes() {
 }
 
 export async function createVote(data: {
-	placeholder_options: Json;
+	vote_options: Json;
 	end_date: Date;
 	is_unlist: boolean;
 	title: string;
 }) {
 	const supabase = await createSupabaseServer();
 
-	const { data: vote, error } = await supabase
-		.from("vote")
-		.insert({
-			placeholder_options: data.placeholder_options,
-			title: data.title,
-			end_date: data.end_date.toISOString(),
-		})
-		.select("id")
-		.single();
+	const { data: voteId, error } = await supabase.rpc("create_vote", {
+		options: data.vote_options,
+		title: data.title,
+		is_unlist: data.is_unlist,
+		end_date: new Date(data.end_date).toISOString(),
+	});
 
 	if (error) {
-		throw "Fail to create";
+		throw "Fail to create vote." + error.message;
 	} else {
-		redirect("/vote/" + vote?.id);
+		redirect("/vote/" + voteId);
 	}
 }
 

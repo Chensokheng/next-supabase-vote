@@ -3,7 +3,6 @@ import { createSupabaseBrower } from "@/lib/supabase/client";
 import { IVoteLog } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
-import { revalidatePath } from "next/cache";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
