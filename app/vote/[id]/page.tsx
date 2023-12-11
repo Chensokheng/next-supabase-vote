@@ -7,10 +7,8 @@ import CloseForm from "../components/CloseForm";
 import createSupabaseServer from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { sortObject } from "@/lib/utils";
-import { unstable_noStore } from "next/cache";
 
 export default async function Page({ params }: { params: { id: string } }) {
-	unstable_noStore();
 	const supabase = await createSupabaseServer();
 	const { data } = await supabase.auth.getUser();
 
