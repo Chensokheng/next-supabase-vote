@@ -4,13 +4,25 @@ import { redirect } from "next/navigation";
 import createSupabaseServer from "../supabase/server";
 import { Json } from "../types/supabase";
 
-export async function listVotes() {
+export async function listActiveVotes() {
 	const supabase = await createSupabaseServer();
 
 	return supabase
 		.from("vote")
 		.select("*,users(*)")
 		.eq("is_unlist", false)
+		.filter("end_date", "gte", new Date().toISOString())
+		.order("created_at", { ascending: true });
+}
+
+export async function listExpiredVotes() {
+	const supabase = await createSupabaseServer();
+
+	return supabase
+		.from("vote")
+		.select("*,users(*)")
+		.eq("is_unlist", false)
+		.filter("end_date", "lte", new Date().toISOString())
 		.order("created_at", { ascending: true });
 }
 

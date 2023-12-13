@@ -1,17 +1,17 @@
 export type IVotes =
 	| {
-			id: string;
 			created_at: string;
 			created_by: string;
-			title: string;
 			end_date: string;
-			placeholder_options: object;
+			id: string;
+			is_unlist: boolean;
+			title: string;
 			users: {
-				id: string;
+				avatar_url: string | null;
 				created_at: string;
-				user_name: string;
-				avatar_url: string;
-			};
+				id: string;
+				user_name: string | null;
+			} | null;
 	  }[]
 	| null;
 

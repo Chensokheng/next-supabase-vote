@@ -62,7 +62,9 @@ export async function middleware(request: NextRequest) {
 		!data.session &&
 		(pathname.startsWith("/vote") || pathname === "/profile")
 	) {
-		return NextResponse.redirect(new URL("/auth", request.url));
+		return NextResponse.redirect(
+			new URL("/auth?next=" + pathname, request.url)
+		);
 	}
 }
 
