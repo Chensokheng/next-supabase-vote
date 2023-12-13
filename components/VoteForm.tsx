@@ -54,16 +54,17 @@ export default function VoteForm() {
 	});
 
 	function addOptions() {
-		if (optionRef.current.value.trim())
+		if (optionRef.current.value.trim()) {
 			form.setValue("vote_options", [
 				...options.map((option) => option.id),
 				optionRef.current.value,
 			]);
-		setOptions((options) => [
-			...options,
-			{ id: optionRef.current.value, label: optionRef.current.value },
-		]);
-		optionRef.current.value = "";
+			setOptions((options) => [
+				...options,
+				{ id: optionRef.current.value, label: optionRef.current.value },
+			]);
+			optionRef.current.value = "";
+		}
 	}
 
 	async function onSubmit(data: z.infer<typeof FormSchema>) {
@@ -131,7 +132,7 @@ export default function VoteForm() {
 								</FormLabel>
 								<FormDescription>
 									You can not edit your vote option. Please
-									double check 📌
+									double check 📌.
 								</FormDescription>
 							</div>
 
@@ -198,7 +199,7 @@ export default function VoteForm() {
 							<Input
 								type="text"
 								ref={optionRef}
-								placeholder="add more option"
+								placeholder="Press enter to add more option"
 								onKeyDown={(e) => {
 									if (e.key === "Enter") {
 										e.preventDefault();

@@ -1,5 +1,3 @@
-import { Json } from "./supabase";
-
 export type IVotes =
 	| {
 			id: string;
@@ -24,3 +22,12 @@ export type IVoteLog = {
 	option: string;
 	created_at: string;
 } | null;
+
+export type IVote = {
+	created_at: string;
+	created_by: string;
+	end_date: string;
+	id: string;
+	is_unlist: boolean;
+	title: string;
+};

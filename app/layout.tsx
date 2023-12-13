@@ -7,6 +7,7 @@ import Navbar from "@/components/nav/Navbar";
 import { ThemeProvider } from "@/components/theme-provider";
 import createSupabaseServer from "@/lib/supabase/server";
 import InitUser from "@/components/store/InitUser";
+import QueryProvider from "@/components/QueryProvider";
 
 const inter = Space_Grotesk({ subsets: ["latin"] });
 
@@ -35,11 +36,13 @@ export default async function RootLayout({
 					enableSystem
 					disableTransitionOnChange
 				>
-					<main className="flex flex-col max-w-7xl mx-auto min-h-screen space-y-10 p-5">
-						<Navbar user={data.user} />
-						<div className="w-full flex-1 ">{children}</div>
-						<Footer />
-					</main>
+					<QueryProvider>
+						<main className="flex flex-col max-w-7xl mx-auto min-h-screen space-y-10 p-5">
+							<Navbar user={data.user} />
+							<div className="w-full flex-1 ">{children}</div>
+							<Footer />
+						</main>
+					</QueryProvider>
 
 					<Toaster position="top-center" reverseOrder={false} />
 				</ThemeProvider>

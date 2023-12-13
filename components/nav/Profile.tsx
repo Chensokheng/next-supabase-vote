@@ -10,6 +10,7 @@ import Image from "next/image";
 import VoteSheet from "../VoteSheet";
 import Logout from "./Logout";
 import { User } from "@supabase/supabase-js";
+import Link from "next/link";
 
 export default function Profile({ user }: { user: User | undefined }) {
 	return (
@@ -23,18 +24,20 @@ export default function Profile({ user }: { user: User | undefined }) {
 					className=" rounded-full ring-green-500 ring cursor-pointer hover:scale-125 transition-all"
 				/>
 			</PopoverTrigger>
-			<PopoverContent className="w-72 space-y-5 divide-y">
-				<Button
-					className="w-full flex items-center justify-between "
-					variant="ghost"
-				>
-					Profile <GearIcon />
-				</Button>
+			<PopoverContent className="w-72 space-y-5 divide-y" align="end">
+				<Link href={"/profile"}>
+					<Button
+						className="w-full flex items-center justify-between border-none "
+						variant="ghost"
+					>
+						Profile <GearIcon />
+					</Button>
+				</Link>
 
 				<VoteSheet
 					trigger={
 						<Button
-							className="w-full flex items-center justify-between "
+							className="w-full flex items-center justify-between rounded-none "
 							variant="ghost"
 						>
 							Create <PlusIcon />

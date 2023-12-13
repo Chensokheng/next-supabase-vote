@@ -20,7 +20,7 @@ export default function Logout() {
 
 	return (
 		<Button
-			className="w-full flex items-center justify-between "
+			className="w-full flex items-center justify-between rounded-none "
 			variant="ghost"
 			onClick={handleLogout}
 		>
