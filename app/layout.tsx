@@ -41,10 +41,6 @@ export default async function RootLayout({
 }: {
 	children: React.ReactNode;
 }) {
-	// TODO: removet this
-	const supabase = await createSupabaseServer();
-	const { data } = await supabase.auth.getUser();
-
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body
@@ -58,7 +54,7 @@ export default async function RootLayout({
 				>
 					<QueryProvider>
 						<main className="flex flex-col max-w-7xl mx-auto min-h-screen space-y-10 p-5">
-							<Navbar user={data.user} />
+							<Navbar />
 							<div className="w-full flex-1 ">{children}</div>
 							<Footer />
 						</main>
@@ -66,7 +62,6 @@ export default async function RootLayout({
 
 					<Toaster position="top-center" reverseOrder={false} />
 				</ThemeProvider>
-				<InitUser user={data.user} />
 			</body>
 		</html>
 	);

@@ -5,8 +5,11 @@ import { LockOpen1Icon } from "@radix-ui/react-icons";
 import { createSupabaseBrower } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Logout() {
+	const queryClient = useQueryClient();
+
 	const [isPending, startTransition] = useTransition();
 	const router = useRouter();
 
@@ -14,6 +17,7 @@ export default function Logout() {
 		const supabase = createSupabaseBrower();
 		startTransition(async () => {
 			await supabase.auth.signOut();
+			queryClient.invalidateQueries({ queryKey: ["user"] });
 			router.refresh();
 		});
 	};

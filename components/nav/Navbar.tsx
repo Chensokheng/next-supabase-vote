@@ -1,12 +1,13 @@
+"use client";
 import { RocketIcon } from "@radix-ui/react-icons";
 import React from "react";
 import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
+import { createSupabaseBrower } from "@/lib/supabase/client";
 import Profile from "./Profile";
-
-import { User } from "@supabase/supabase-js";
 import LoginForm from "./LoginForm";
 
-export default function Navbar({ user }: { user: User | null }) {
+export default function Navbar() {
 	return (
 		<nav className=" w-full flex items-center justify-between ">
 			<Link href="/" className="flex items-center gap-2">
@@ -14,7 +15,24 @@ export default function Navbar({ user }: { user: User | null }) {
 
 				<RocketIcon className="w-5 h-5  animate-lanuch transition-all transform text-green-500" />
 			</Link>
-			{user?.id ? <Profile user={user} /> : <LoginForm />}
+			<RenderProfile />
 		</nav>
 	);
 }
+
+const RenderProfile = () => {
+	const supabase = createSupabaseBrower();
+	const { data, isFetching } = useQuery({
+		queryKey: ["user"],
+		queryFn: () => supabase.auth.getUser(),
+	});
+	if (isFetching) {
+		return <></>;
+	}
+
+	if (data?.data.user) {
+		return <Profile user={data?.data.user} />;
+	} else {
+		return <LoginForm />;
+	}
+};
