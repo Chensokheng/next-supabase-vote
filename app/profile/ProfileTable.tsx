@@ -39,12 +39,7 @@ import {
 import toast from "react-hot-toast";
 import { createSupabaseBrower } from "@/lib/supabase/client";
 
-export default function ProfileTable({
-	data,
-}: {
-	data: IVote[];
-	userId: string;
-}) {
+export default function ProfileTable({ data }: { data: IVote[] }) {
 	const [votes, setVotes] = useState(data);
 	const supabse = createSupabaseBrower();
 	const [animationParent] = useAutoAnimate();

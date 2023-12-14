@@ -5,8 +5,6 @@ import { Toaster } from "react-hot-toast";
 import Footer from "../components/Footer";
 import Navbar from "@/components/nav/Navbar";
 import { ThemeProvider } from "@/components/theme-provider";
-import createSupabaseServer from "@/lib/supabase/server";
-import InitUser from "@/components/store/InitUser";
 import QueryProvider from "@/components/QueryProvider";
 
 const inter = Space_Grotesk({ subsets: ["latin"] });

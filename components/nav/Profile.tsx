@@ -25,7 +25,7 @@ export default function Profile({ user }: { user: User | undefined }) {
 				/>
 			</PopoverTrigger>
 			<PopoverContent className="w-72 space-y-5 divide-y" align="end">
-				<Link href={"/profile"}>
+				<Link href={"/profile?id=" + user?.id}>
 					<Button
 						className="w-full flex items-center justify-between border-none "
 						variant="ghost"

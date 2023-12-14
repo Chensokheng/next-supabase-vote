@@ -9,42 +9,6 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      test: {
-        Row: {
-          created_at: string
-          id: string
-          text: string | null
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          text?: string | null
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          text?: string | null
-        }
-        Relationships: []
-      }
-      test2: {
-        Row: {
-          created_at: string
-          id: string
-          text: string | null
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          text?: string | null
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          text?: string | null
-        }
-        Relationships: []
-      }
       users: {
         Row: {
           avatar_url: string | null
@@ -64,7 +28,15 @@ export interface Database {
           id?: string
           user_name?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "users_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       vote: {
         Row: {
@@ -169,6 +141,16 @@ export interface Database {
           end_date: string
         }
         Returns: string
+      }
+      get_vote: {
+        Args: {
+          target_vote: string
+        }
+        Returns: {
+          vote_columns: unknown
+          vote_options_columns: unknown
+          vote_log_columns: unknown
+        }[]
       }
       is_expired: {
         Args: {

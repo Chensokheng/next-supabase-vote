@@ -57,6 +57,7 @@ export async function middleware(request: NextRequest) {
 	);
 
 	const { data } = await supabase.auth.getSession();
+	const { searchParams } = new URL(request.url);
 
 	if (
 		!data.session &&
@@ -65,6 +66,10 @@ export async function middleware(request: NextRequest) {
 		return NextResponse.redirect(
 			new URL("/auth?next=" + pathname, request.url)
 		);
+	} else if (pathname.startsWith("/profile")) {
+		if (searchParams.get("id") !== data.session?.user.id) {
+			return NextResponse.redirect(new URL("/", request.url));
+		}
 	}
 }
 

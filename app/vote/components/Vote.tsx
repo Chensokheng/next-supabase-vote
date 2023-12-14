@@ -1,25 +1,38 @@
 "use client";
 import { createSupabaseBrower } from "@/lib/supabase/client";
-import { IVoteLog } from "@/lib/types";
-import { cn } from "@/lib/utils";
-import { InfoCircledIcon } from "@radix-ui/react-icons";
+import { cn, getHightValueObjectKey } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
+import { InfoCircledIcon } from "@radix-ui/react-icons";
+import { IVoteLog } from "@/lib/types";
 
 export default function Vote({
+	initVote,
 	id,
-	options,
-	vote_log,
-	is_expired,
+	voteLog,
+	isExpired,
 }: {
+	initVote: { [key: string]: number };
 	id: string;
-	options: { [key: string]: number };
-	vote_log: IVoteLog;
-	is_expired: boolean;
+	voteLog: IVoteLog;
+	isExpired: boolean;
 }) {
-	const supabase = createSupabaseBrower();
 	const router = useRouter();
+	const supabase = createSupabaseBrower();
+	const [voteOptions, setVoteOptons] = useState(initVote);
+
+	const totalVote = useMemo(() => {
+		return Object.values(voteOptions).reduce(
+			(acc, value) => acc + value,
+			0
+		);
+	}, [voteOptions]);
+
+	const highestKey = useMemo(
+		() => getHightValueObjectKey(voteOptions),
+		[voteOptions]
+	);
 
 	useEffect(() => {
 		const channel = supabase
@@ -33,7 +46,7 @@ export default function Vote({
 					filter: "vote_id=eq." + id,
 				},
 				(payload) => {
-					setVote(payload.new.options);
+					setVoteOptons(payload.new.options);
 				}
 			)
 			.subscribe();
@@ -43,14 +56,23 @@ export default function Vote({
 		// eslint-disable-next-line
 	}, []);
 
-	const [vote, setVote] = useState(options);
+	const rpcUpdateVote = async (option: string) => {
+		let { error } = await supabase.rpc("update_vote", {
+			update_id: id,
+			option,
+		});
+		if (error) {
+			throw "Fail to update vote";
+		} else {
+			router.refresh();
+		}
+	};
 
 	const castVote = async (option: string) => {
-		if (vote_log) {
+		if (voteLog) {
 			return null;
 		}
-
-		if (is_expired) {
+		if (isExpired) {
 			return toast.error("Vote is expired");
 		} else {
 			toast.promise(rpcUpdateVote(option), {
@@ -61,43 +83,13 @@ export default function Vote({
 		}
 	};
 
-	const rpcUpdateVote = async (option: string) => {
-		let { error } = await supabase.rpc("update_vote", {
-			update_id: id,
-			option,
-		});
-		// call to supabase admin
-		if (error) {
-			throw "Fail to update vote";
-		} else {
-			router.refresh();
-		}
-	};
-
-	const highestKey = useMemo(() => {
-		let maxValue = -Infinity;
-		let hightKey = "";
-		for (const [key, value] of Object.entries(vote)) {
-			if (value > maxValue) {
-				hightKey = key;
-				maxValue = value;
-			} else if (value === maxValue) {
-				hightKey = "";
-			}
-		}
-		return hightKey;
-	}, [vote]);
-
-	const totalVote = useMemo(() => {
-		return Object.values(vote).reduce((acc, value) => acc + value, 0);
-	}, [vote]);
-
 	return (
 		<div className="space-y-10">
 			<div>
-				{Object.keys(vote).map((key, index) => {
+				{Object.keys(voteOptions).map((key, index) => {
 					const percentage = Math.round(
-						(vote[key as keyof typeof vote] * 100) / totalVote
+						(voteOptions[key as keyof typeof voteOptions] * 100) /
+							totalVote
 					);
 					return (
 						<div
@@ -123,7 +115,11 @@ export default function Vote({
 										}}
 									>
 										<h1 className=" absolute top-1/2 -right-8  -translate-y-1/2 select-none">
-											{vote[key as keyof typeof vote]}
+											{
+												voteOptions[
+													key as keyof typeof voteOptions
+												]
+											}
 										</h1>
 									</div>
 								</div>
@@ -132,16 +128,16 @@ export default function Vote({
 					);
 				})}
 			</div>
-			{vote_log && (
+			{voteLog && (
 				<div className="flex items-center gap-2 text-gray-400">
 					<InfoCircledIcon />
 					<h1 className="text-lg ">
 						You voted for{" "}
 						<span className="text-yellow-500 font-bold">
-							{vote_log?.option}
+							{voteLog?.option}
 						</span>{" "}
-						on {new Date(vote_log?.created_at!).toDateString()}{" "}
-						{new Date(vote_log?.created_at!).toLocaleTimeString()}
+						on {new Date(voteLog?.created_at!).toDateString()}{" "}
+						{new Date(voteLog?.created_at!).toLocaleTimeString()}
 					</h1>
 				</div>
 			)}

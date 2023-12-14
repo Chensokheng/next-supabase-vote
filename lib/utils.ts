@@ -21,3 +21,17 @@ export function sortObject(object: { [key: string]: number }) {
 	});
 	return sortedVote;
 }
+
+export function getHightValueObjectKey(object: { [key: string]: number }) {
+	let maxValue = -Infinity;
+	let hightKey = "";
+	for (const [key, value] of Object.entries(object)) {
+		if (value > maxValue) {
+			hightKey = key;
+			maxValue = value;
+		} else if (value === maxValue) {
+			hightKey = "";
+		}
+	}
+	return hightKey;
+}
