@@ -38,11 +38,11 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
 		},
 		openGraph: {
 			title: data?.title,
-			url,
+			url: url + "vote/" + data?.id,
 			siteName: "Daily Blog",
 			images:
 				url +
-				`/og?author=${data?.users?.user_name}&author_url=${data?.users?.avatar_url}&title=${data?.title}`,
+				`og?author=${data?.users?.user_name}&author_url=${data?.users?.avatar_url}&title=${data?.title}`,
 			type: "website",
 		},
 		keywords: ["daily vote", data?.users?.user_name, "dailywebcoding"],
