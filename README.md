@@ -35,7 +35,8 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
--   [ ] static profile page featch at client
--   [ ] static vote page fetch at client
+-   [x] static vote page fetch at client
 -   [ ] chat
+-   [ ] check vote title
+-   [ ] check option make sure not equal
 -   [ ] presence
