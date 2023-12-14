@@ -38,9 +38,11 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
 		},
 		openGraph: {
 			title: data?.title,
-			url: "https://dynamic-og-image-generator.vercel.app",
+			url,
 			siteName: "Daily Blog",
-			images: `https://dynamic-og-image-generator.vercel.app/api/generate?title=${data?.title}&author=${data?.users?.user_name}&websiteUrl=${url}&avatar=${data?.users?.avatar_url}&theme=nightOwl`,
+			images:
+				url +
+				`/og?author=${data?.users?.user_name}&author_url=${data?.users?.avatar_url}&title=${data?.title}`,
 			type: "website",
 		},
 		keywords: ["daily vote", data?.users?.user_name, "dailywebcoding"],
