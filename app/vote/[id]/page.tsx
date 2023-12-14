@@ -68,9 +68,6 @@ export default async function Page({ params }: { params: { id: string } }) {
 				<div className="w-full space-y-20">
 					<Pressence title={vote?.title} endDate={vote.end_date} />
 					<div className=" w-full grid grid-cols-1 md:grid-cols-2 gap-10 ">
-						<Suspense fallback={<VoteLoading />}>
-							<VoteFetcher voteId={params.id} />
-						</Suspense>
 						<Chat />
 					</div>
 				</div>
