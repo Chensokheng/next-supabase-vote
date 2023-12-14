@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
 		openGraph: {
 			title: data?.title,
 			url: url + "vote/" + data?.id,
-			siteName: "Daily Blog",
+			siteName: "Daily Vote",
 			images:
 				url +
 				`og?author=${data?.users?.user_name}&author_url=${data?.users?.avatar_url}&title=${data?.title}`,

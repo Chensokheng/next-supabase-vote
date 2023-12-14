@@ -21,7 +21,7 @@ export async function GET(request: Request) {
 		const { searchParams } = new URL(request.url);
 
 		const title = searchParams.get("title");
-		const author = searchParams.get("athuor");
+		const author = searchParams.get("author");
 		const author_url = searchParams.get("author_url");
 
 		return new ImageResponse(
