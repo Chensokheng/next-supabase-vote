@@ -10,7 +10,10 @@ export default function LoginForm() {
 		await supabase.auth.signInWithOAuth({
 			provider: "github",
 			options: {
-				redirectTo: location.origin + "/auth/callback",
+				redirectTo:
+					location.origin +
+					"/auth/callback?next=" +
+					location.pathname,
 			},
 		});
 	};

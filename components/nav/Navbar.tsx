@@ -2,10 +2,9 @@
 import { RocketIcon } from "@radix-ui/react-icons";
 import React from "react";
 import Link from "next/link";
-import { useQuery } from "@tanstack/react-query";
-import { createSupabaseBrower } from "@/lib/supabase/client";
 import Profile from "./Profile";
 import LoginForm from "./LoginForm";
+import { useUser } from "@/lib/hook";
 
 export default function Navbar() {
 	return (
@@ -21,11 +20,8 @@ export default function Navbar() {
 }
 
 const RenderProfile = () => {
-	const supabase = createSupabaseBrower();
-	const { data, isFetching } = useQuery({
-		queryKey: ["user"],
-		queryFn: () => supabase.auth.getUser(),
-	});
+	const { data, isFetching } = useUser();
+
 	if (isFetching) {
 		return <></>;
 	}

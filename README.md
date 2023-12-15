@@ -40,3 +40,4 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 -   [ ] check vote title
 -   [ ] check option make sure not equal
 -   [ ] presence
+-   [ ] policy that allow user to read there own post only

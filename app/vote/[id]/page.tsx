@@ -1,11 +1,9 @@
-import React, { Suspense } from "react";
-import Chat from "../components/Chat";
+import React from "react";
 import Pressence from "../components/Pressence";
 import CloseForm from "../components/CloseForm";
 import { redirect } from "next/navigation";
 import { createSupabaseBrower } from "@/lib/supabase/client";
-import VoteFetcher from "../components/VoteFetcher";
-import VoteLoading from "../components/VoteLoading";
+import VoteWrapper from "../components/VoteWrapper";
 
 export async function generateStaticParams() {
 	const supabase = createSupabaseBrower();
@@ -67,9 +65,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 			<div className="w-full flex items-center justify-center  min-h-70vh">
 				<div className="w-full space-y-20">
 					<Pressence title={vote?.title} endDate={vote.end_date} />
-					<div className=" w-full grid grid-cols-1 md:grid-cols-2 gap-10 ">
-						<Chat />
-					</div>
+					<VoteWrapper id={params.id} />
 				</div>
 			</div>
 			<CloseForm />

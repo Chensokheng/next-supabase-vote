@@ -1,38 +1,19 @@
 "use client";
 import { createSupabaseBrower } from "@/lib/supabase/client";
 import { cn, getHightValueObjectKey } from "@/lib/utils";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useMemo, useState } from "react";
+import { redirect } from "next/navigation";
+import React, { useEffect, useMemo } from "react";
 import toast from "react-hot-toast";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
-import { IVoteLog } from "@/lib/types";
 
-export default function Vote({
-	initVote,
-	id,
-	voteLog,
-	isExpired,
-}: {
-	initVote: { [key: string]: number };
-	id: string;
-	voteLog: IVoteLog;
-	isExpired: boolean;
-}) {
-	const router = useRouter();
+import { useGetVote } from "@/lib/hook";
+import VoteLoading from "./VoteLoading";
+import { useQueryClient } from "@tanstack/react-query";
+
+export default function Vote({ id }: { id: string }) {
 	const supabase = createSupabaseBrower();
-	const [voteOptions, setVoteOptons] = useState(initVote);
-
-	const totalVote = useMemo(() => {
-		return Object.values(voteOptions).reduce(
-			(acc, value) => acc + value,
-			0
-		);
-	}, [voteOptions]);
-
-	const highestKey = useMemo(
-		() => getHightValueObjectKey(voteOptions),
-		[voteOptions]
-	);
+	const queryClient = useQueryClient();
+	const { data, isFetching } = useGetVote(id);
 
 	useEffect(() => {
 		const channel = supabase
@@ -46,7 +27,15 @@ export default function Vote({
 					filter: "vote_id=eq." + id,
 				},
 				(payload) => {
-					setVoteOptons(payload.new.options);
+					console.log(payload.new.options);
+
+					queryClient.setQueryData(
+						["vote-" + id],
+						(currentVote: any) => ({
+							...currentVote,
+							voteOptions: payload.new.options,
+						})
+					);
 				}
 			)
 			.subscribe();
@@ -56,6 +45,30 @@ export default function Vote({
 		// eslint-disable-next-line
 	}, []);
 
+	const totalVote = useMemo(() => {
+		if (data?.voteOptions) {
+			return Object.values(data.voteOptions).reduce(
+				(acc, value) => acc + value,
+				0
+			);
+		}
+	}, [data?.voteOptions]);
+	const highestKey = useMemo(() => {
+		if (data?.voteOptions) {
+			return getHightValueObjectKey(data?.voteOptions);
+		}
+	}, [data?.voteOptions]);
+
+	if (isFetching && !data) {
+		return <VoteLoading />;
+	}
+
+	if (!data) {
+		return redirect("/");
+	}
+
+	const { voteLog, voteOptions, isExpired } = data;
+
 	const rpcUpdateVote = async (option: string) => {
 		let { error } = await supabase.rpc("update_vote", {
 			update_id: id,
@@ -64,7 +77,7 @@ export default function Vote({
 		if (error) {
 			throw "Fail to update vote";
 		} else {
-			router.refresh();
+			queryClient.invalidateQueries({ queryKey: ["vote-" + id] });
 		}
 	};
 
@@ -89,7 +102,7 @@ export default function Vote({
 				{Object.keys(voteOptions).map((key, index) => {
 					const percentage = Math.round(
 						(voteOptions[key as keyof typeof voteOptions] * 100) /
-							totalVote
+							totalVote!
 					);
 					return (
 						<div
