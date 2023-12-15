@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import { Button } from "../ui/button";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { createSupabaseBrower } from "@/lib/supabase/client";
