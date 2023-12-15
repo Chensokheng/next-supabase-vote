@@ -70,7 +70,7 @@ export default function EditVoteForm({
 					end_date: data.end_date.toISOString(),
 				})
 				.eq("id", vote.id);
-			updateVotePath(vote.id);
+			await updateVotePath(vote.id);
 
 			if (error?.message) {
 				throw error.message;
