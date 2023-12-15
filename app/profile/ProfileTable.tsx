@@ -101,11 +101,14 @@ export default function ProfileTable({ data }: { data: IVote[] }) {
 						<TableHead className="w-[100px]"></TableHead>
 					</TableRow>
 				</TableHeader>
+
 				<TableBody ref={animationParent}>
 					{votes.map((vote) => (
 						<TableRow key={vote.id}>
 							<TableCell className="font-medium">
-								{vote.title}
+								{vote.title.length > 30
+									? vote.title.slice(0, 30) + " ..."
+									: vote.title}
 							</TableCell>
 							<TableCell className="font-medium">
 								{vote.end_date > new Date().toISOString() ? (
