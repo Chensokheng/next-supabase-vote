@@ -25,18 +25,26 @@ import { format } from "date-fns";
 import { Calendar } from "./ui/calendar";
 import { createVote } from "@/lib/actions/vote";
 
-const FormSchema = z.object({
-	vote_options: z
-		.array(z.string())
-		.refine((value) => value.length >= 2 && value.length <= 6, {
-			message:
-				"You have to select at least two items and max at six items.",
-		}),
-	title: z
-		.string()
-		.min(5, { message: "Title has a minimum characters of 5" }),
-	end_date: z.date(),
-});
+const FormSchema = z
+	.object({
+		vote_options: z
+			.array(z.string())
+			.refine((value) => value.length >= 2 && value.length <= 6, {
+				message:
+					"You have to select at least two items and max at six items.",
+			}),
+		title: z
+			.string()
+			.min(5, { message: "Title has a minimum characters of 5" }),
+		end_date: z.date(),
+	})
+	.refine(
+		(data) => {
+			const vote_options = [...new Set([...data.vote_options])];
+			return vote_options.length === data.vote_options.length;
+		},
+		{ message: "Vote option need to be uniqe", path: ["vote_options"] }
+	);
 
 export default function VoteForm() {
 	const optionRef = useRef() as React.MutableRefObject<HTMLInputElement>;
