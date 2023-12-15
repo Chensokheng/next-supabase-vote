@@ -4,7 +4,6 @@ export type IVotes =
 			created_by: string;
 			end_date: string;
 			id: string;
-			public: boolean;
 			title: string;
 			users: {
 				avatar_url: string | null;
@@ -28,6 +27,5 @@ export type IVote = {
 	created_by: string;
 	end_date: string;
 	id: string;
-	public: boolean;
 	title: string;
 };

@@ -94,7 +94,6 @@ export default function ProfileTable({ data }: { data: IVote[] }) {
 			<Table>
 				<TableHeader>
 					<TableRow>
-						<TableHead>Public</TableHead>
 						<TableHead>Title</TableHead>
 						<TableHead>Status</TableHead>
 						<TableHead>Created At</TableHead>
@@ -105,9 +104,6 @@ export default function ProfileTable({ data }: { data: IVote[] }) {
 				<TableBody ref={animationParent}>
 					{votes.map((vote) => (
 						<TableRow key={vote.id}>
-							<TableCell className="font-medium">
-								<Checkbox checked={vote.public} />
-							</TableCell>
 							<TableCell className="font-medium">
 								{vote.title}
 							</TableCell>

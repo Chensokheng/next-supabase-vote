@@ -42,7 +42,7 @@ export default function ListVote({
 									</div>
 								</div>
 
-								<h1 className="text-2xl font-medium">
+								<h1 className="text-2xl font-medium line-clamp-2">
 									{title}
 								</h1>
 								{isExpire ? (

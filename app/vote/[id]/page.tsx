@@ -11,7 +11,6 @@ export async function generateStaticParams() {
 	const { data: votes } = await supabase
 		.from("vote")
 		.select("id")
-		.eq("public", true)
 		.filter("end_date", "gte", new Date().toISOString())
 		.limit(10);
 

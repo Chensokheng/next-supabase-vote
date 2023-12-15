@@ -44,7 +44,6 @@ export interface Database {
           created_by: string
           end_date: string
           id: string
-          public: boolean
           title: string
         }
         Insert: {
@@ -52,7 +51,6 @@ export interface Database {
           created_by?: string
           end_date: string
           id?: string
-          public?: boolean
           title: string
         }
         Update: {
@@ -60,7 +58,6 @@ export interface Database {
           created_by?: string
           end_date?: string
           id?: string
-          public?: boolean
           title?: string
         }
         Relationships: [
@@ -137,7 +134,6 @@ export interface Database {
         Args: {
           options: Json
           title: string
-          public: boolean
           end_date: string
         }
         Returns: string
