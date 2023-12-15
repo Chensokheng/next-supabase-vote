@@ -21,7 +21,7 @@ export default function Profile({ user }: { user: User | undefined }) {
 					width={50}
 					height={50}
 					alt={user?.user_metadata?.user_name}
-					className=" rounded-full ring-green-500 ring cursor-pointer hover:scale-125 transition-all"
+					className=" rounded-full ring-green-500 ring cursor-pointer hover:scale-125 transition-all animate-fade"
 				/>
 			</PopoverTrigger>
 			<PopoverContent className="w-72 space-y-5 divide-y" align="end">

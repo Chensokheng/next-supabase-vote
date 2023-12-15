@@ -21,7 +21,7 @@ export default function LoginForm() {
 	return (
 		<Button
 			variant="outline"
-			className="flex items-center gap-2 border p-2 rounded-md border-zinc-400 hover:border-green-500 transition-all px-8"
+			className="flex items-center gap-2 border p-2 rounded-md border-zinc-400 hover:border-green-500 transition-all px-8 animate-fade"
 			onClick={handleLoginWithGihub}
 		>
 			<GitHubLogoIcon /> Login
