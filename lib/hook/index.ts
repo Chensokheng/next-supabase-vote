@@ -42,7 +42,7 @@ export function useUser() {
 		queryKey: ["user"],
 		queryFn: async () => {
 			const { data } = await supabase.auth.getSession();
-			return data.session?.user;
+			return { user: data.session?.user };
 		},
 	});
 }

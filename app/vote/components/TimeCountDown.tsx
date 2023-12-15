@@ -46,10 +46,10 @@ const TimeCountDown = ({ targetDate }: { targetDate: Date }) => {
 			suppressHydrationWarning
 		>
 			<TimerIcon />
-			<span>{timeLeft.days}D:</span>
-			<span>{timeLeft.hours}H:</span>
-			<span>{timeLeft.minutes}M:</span>
-			<span>{timeLeft.seconds}S</span>
+			<span suppressHydrationWarning>{timeLeft.days}D:</span>
+			<span suppressHydrationWarning>{timeLeft.hours}H:</span>
+			<span suppressHydrationWarning>{timeLeft.minutes}M:</span>
+			<span suppressHydrationWarning>{timeLeft.seconds}S</span>
 		</div>
 	);
 };
