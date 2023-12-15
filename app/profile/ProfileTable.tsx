@@ -103,7 +103,7 @@ export default function ProfileTable({ data }: { data: IVote[] }) {
 					{votes.map((vote) => (
 						<TableRow key={vote.id}>
 							<TableCell className="font-medium">
-								<Checkbox checked={!vote.is_unlist} />
+								<Checkbox checked={vote.public} />
 							</TableCell>
 							<TableCell className="font-medium">
 								{vote.title}

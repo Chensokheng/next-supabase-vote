@@ -10,7 +10,7 @@ export async function listActiveVotes() {
 	return supabase
 		.from("vote")
 		.select("*,users(*)")
-		.eq("is_unlist", false)
+		.eq("public", true)
 		.filter("end_date", "gte", new Date().toISOString())
 		.order("created_at", { ascending: true });
 }
@@ -21,7 +21,7 @@ export async function listExpiredVotes() {
 	return supabase
 		.from("vote")
 		.select("*,users(*)")
-		.eq("is_unlist", false)
+		.eq("public", true)
 		.filter("end_date", "lte", new Date().toISOString())
 		.order("created_at", { ascending: true });
 }
@@ -29,7 +29,7 @@ export async function listExpiredVotes() {
 export async function createVote(data: {
 	vote_options: Json;
 	end_date: Date;
-	is_unlist: boolean;
+	public: boolean;
 	title: string;
 }) {
 	const supabase = await createSupabaseServer();
@@ -37,7 +37,7 @@ export async function createVote(data: {
 	const { data: voteId, error } = await supabase.rpc("create_vote", {
 		options: data.vote_options,
 		title: data.title,
-		is_unlist: data.is_unlist,
+		public: data.public,
 		end_date: new Date(data.end_date).toISOString(),
 	});
 

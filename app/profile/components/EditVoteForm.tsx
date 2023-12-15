@@ -36,7 +36,7 @@ const FormSchema = z.object({
 	title: z
 		.string()
 		.min(5, { message: "Title has a minimum characters of 5" }),
-	is_unlist: z.boolean().default(false),
+	public: z.boolean().default(false),
 	end_date: z.date(),
 });
 
@@ -54,7 +54,7 @@ export default function EditVoteForm({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
 			title: vote.title,
-			is_unlist: vote.is_unlist,
+			public: vote.public,
 			end_date: new Date(vote.end_date),
 		},
 	});
@@ -64,7 +64,7 @@ export default function EditVoteForm({
 			const { error } = await supabase
 				.from("vote")
 				.update({
-					is_unlist: data.is_unlist,
+					public: data.public,
 					title: data.title,
 					end_date: data.end_date.toISOString(),
 				})
@@ -93,7 +93,7 @@ export default function EditVoteForm({
 			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 				<FormField
 					control={form.control}
-					name="is_unlist"
+					name="public"
 					render={({ field }) => (
 						<FormItem className=" space-x-2">
 							<FormControl>
@@ -103,7 +103,7 @@ export default function EditVoteForm({
 								/>
 							</FormControl>
 							<FormLabel className="font-normal text-lg">
-								{"unlist (optional)"}
+								{"Public (optional)"}
 							</FormLabel>
 							<FormDescription>
 								If checked, it will not shown to public. But can
