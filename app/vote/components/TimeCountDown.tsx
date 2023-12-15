@@ -1,4 +1,5 @@
 "use client";
+import { TimerIcon } from "@radix-ui/react-icons";
 import React, { useState, useEffect } from "react";
 
 const TimeCountDown = ({ targetDate }: { targetDate: Date }) => {
@@ -40,9 +41,16 @@ const TimeCountDown = ({ targetDate }: { targetDate: Date }) => {
 	}, []);
 
 	return (
-		<p className="text-3xl" suppressHydrationWarning>
-			{`${timeLeft.days}D : ${timeLeft.hours}H : ${timeLeft.minutes}M : ${timeLeft.seconds}S`}
-		</p>
+		<div
+			className="text-3xl text-gray-400 flex items-center gap-2 "
+			suppressHydrationWarning
+		>
+			<TimerIcon />
+			<span>{timeLeft.days}D:</span>
+			<span>{timeLeft.hours}H:</span>
+			<span>{timeLeft.minutes}M:</span>
+			<span>{timeLeft.seconds}S</span>
+		</div>
 	);
 };
 
