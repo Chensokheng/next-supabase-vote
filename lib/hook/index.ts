@@ -46,3 +46,19 @@ export function useUser() {
 		},
 	});
 }
+
+export function useChat(room: string) {
+	const supabase = createSupabaseBrower();
+	return useQuery({
+		queryKey: ["chat-" + room],
+		queryFn: async () => {
+			const { data } = await supabase
+				.from("messages")
+				.select("*,users(*)")
+				.eq("vote_id", room)
+				.limit(20);
+
+			return { messages: data || [] };
+		},
+	});
+}

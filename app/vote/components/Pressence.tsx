@@ -13,7 +13,6 @@ export default function TePressencest({ id }: { id: string }) {
 		const channel = supabase.channel(id);
 		channel
 			.on("presence", { event: "sync" }, () => {
-				console.log("Synced presence state: ", channel.presenceState());
 				let users: string[] = [];
 				for (const id in channel.presenceState()) {
 					// @ts-ignore
@@ -22,7 +21,6 @@ export default function TePressencest({ id }: { id: string }) {
 						users.push(user_id);
 					}
 				}
-
 				const length = [...new Set(users)].length;
 				setOnlineUsers(length);
 			})

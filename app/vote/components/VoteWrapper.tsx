@@ -5,6 +5,7 @@ import Vote from "./Vote";
 import Chat from "./Chat";
 import { useUser } from "@/lib/hook";
 import Pressence from "./Pressence";
+import ChatListener from "./ChatListener";
 
 export default function VoteWrapper({ id }: { id: string }) {
 	const { isFetching, data } = useUser();
@@ -21,7 +22,8 @@ export default function VoteWrapper({ id }: { id: string }) {
 			<Pressence id={id} />
 			<div className=" w-full grid grid-cols-1 md:grid-cols-2 gap-10 ">
 				<Vote id={id} />
-				<Chat />
+				<Chat voteId={id} />
+				<ChatListener voteId={id} />
 			</div>
 		</div>
 	);
