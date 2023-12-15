@@ -38,7 +38,6 @@ export function useGetVote(id: string) {
 
 export function useUser() {
 	const supabase = createSupabaseBrower();
-
 	return useQuery({
 		queryKey: ["user"],
 		queryFn: () => supabase.auth.getUser(),

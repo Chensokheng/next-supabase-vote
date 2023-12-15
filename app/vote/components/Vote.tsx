@@ -17,7 +17,7 @@ export default function Vote({ id }: { id: string }) {
 
 	useEffect(() => {
 		const channel = supabase
-			.channel(id)
+			.channel("vote" + id)
 			.on(
 				"postgres_changes",
 				{

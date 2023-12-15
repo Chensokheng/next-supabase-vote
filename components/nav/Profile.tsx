@@ -15,7 +15,7 @@ import Link from "next/link";
 export default function Profile({ user }: { user: User | undefined }) {
 	return (
 		<Popover>
-			<PopoverTrigger asChild>
+			<PopoverTrigger asChild id="close-popover">
 				<Image
 					src={user?.user_metadata?.avatar_url}
 					width={50}
@@ -29,6 +29,9 @@ export default function Profile({ user }: { user: User | undefined }) {
 					<Button
 						className="w-full flex items-center justify-between border-none "
 						variant="ghost"
+						onClick={() => {
+							document.getElementById("close-popover")?.click();
+						}}
 					>
 						Profile <GearIcon />
 					</Button>
