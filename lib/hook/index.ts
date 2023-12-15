@@ -40,6 +40,9 @@ export function useUser() {
 	const supabase = createSupabaseBrower();
 	return useQuery({
 		queryKey: ["user"],
-		queryFn: () => supabase.auth.getUser(),
+		queryFn: async () => {
+			const { data } = await supabase.auth.getSession();
+			return data.session?.user;
+		},
 	});
 }

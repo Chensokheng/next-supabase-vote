@@ -12,7 +12,7 @@ export default function VoteWrapper({ id }: { id: string }) {
 		return <div className=" h-70vh"></div>;
 	}
 
-	if (!data?.data.user?.id) {
+	if (!data?.id) {
 		return <AuthComponent />;
 	}
 

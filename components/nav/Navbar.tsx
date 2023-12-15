@@ -26,8 +26,8 @@ const RenderProfile = () => {
 		return <></>;
 	}
 
-	if (data?.data.user) {
-		return <Profile user={data?.data.user} />;
+	if (data?.id) {
+		return <Profile user={data} />;
 	} else {
 		return <LoginForm />;
 	}

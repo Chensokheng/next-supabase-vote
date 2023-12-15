@@ -30,7 +30,7 @@ export default function TePressencest({ id }: { id: string }) {
 				if (status === "SUBSCRIBED") {
 					await channel.track({
 						online_at: new Date().toISOString(),
-						user_id: data?.data?.user?.id,
+						user_id: data?.id,
 					});
 				}
 			});
