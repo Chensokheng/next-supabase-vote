@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/popover";
 import toast from "react-hot-toast";
 import { createSupabaseBrower } from "@/lib/supabase/client";
+import { updateVotePath } from "@/lib/actions/vote";
 
 export default function ProfileTable({ data }: { data: IVote[] }) {
 	const [votes, setVotes] = useState(data);
@@ -55,9 +56,11 @@ export default function ProfileTable({ data }: { data: IVote[] }) {
 		);
 	};
 
-	const toastDelete = async (id: string) => {
+	const toastDelete = async (id: string, title: string) => {
 		const deletVote = async () => {
 			const { error } = await supabse.from("vote").delete().eq("id", id);
+			updateVotePath(id);
+
 			if (error) {
 				throw error.message;
 			} else {
@@ -69,7 +72,7 @@ export default function ProfileTable({ data }: { data: IVote[] }) {
 
 		toast.promise(deletVote(), {
 			loading: "deleting..",
-			success: "Successfully delete vote " + id,
+			success: "Successfully delete vote " + title,
 			error: (err) => "Failt to delete vote. " + err.toString(),
 		});
 	};
@@ -170,7 +173,10 @@ export default function ProfileTable({ data }: { data: IVote[] }) {
 													</AlertDialogCancel>
 													<AlertDialogAction
 														onClick={() =>
-															toastDelete(vote.id)
+															toastDelete(
+																vote.id,
+																vote.title
+															)
 														}
 													>
 														Continue

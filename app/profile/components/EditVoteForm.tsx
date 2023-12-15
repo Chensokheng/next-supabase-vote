@@ -31,6 +31,7 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { IVote } from "@/lib/types";
 import { createSupabaseBrower } from "@/lib/supabase/client";
+import { updateVotePath } from "@/lib/actions/vote";
 
 const FormSchema = z.object({
 	title: z
@@ -69,6 +70,8 @@ export default function EditVoteForm({
 					end_date: data.end_date.toISOString(),
 				})
 				.eq("id", vote.id);
+			updateVotePath(vote.id);
+
 			if (error?.message) {
 				throw error.message;
 			} else {
@@ -77,6 +80,7 @@ export default function EditVoteForm({
 					...data,
 					end_date: data.end_date.toISOString(),
 				});
+
 				document.getElementById("close-sheet")?.click();
 			}
 		};

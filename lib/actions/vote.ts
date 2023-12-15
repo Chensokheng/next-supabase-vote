@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import createSupabaseServer from "../supabase/server";
 import { Json } from "../types/supabase";
+import { revalidatePath } from "next/cache";
 
 export async function listActiveVotes() {
 	const supabase = await createSupabaseServer();
@@ -48,6 +49,7 @@ export async function createVote(data: {
 	}
 }
 
-export async function castVote() {
-	console.log(process.env.test);
+export async function updateVotePath(id: string) {
+	revalidatePath("/vote/" + id);
+	revalidatePath("/");
 }
