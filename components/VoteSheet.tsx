@@ -13,7 +13,7 @@ export default function VoteSheet({ trigger }: { trigger: ReactNode }) {
 	return (
 		<Sheet>
 			<SheetTrigger asChild>{trigger}</SheetTrigger>
-			<SheetContent className=" ">
+			<SheetContent className="min-h-screen">
 				<div className=" space-y-10">
 					<SheetHeader>
 						<SheetTitle>New Vote</SheetTitle>

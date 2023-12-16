@@ -4,10 +4,9 @@ import { redirect } from "next/navigation";
 import { createSupabaseBrower } from "@/lib/supabase/client";
 import VoteWrapper from "../components/VoteWrapper";
 import Info from "../components/Info";
-import createSupabaseServerAdmin from "@/lib/supabase/admin";
 
 export async function generateStaticParams() {
-	const supabase = await createSupabaseServerAdmin();
+	const supabase = await createSupabaseBrower();
 
 	const { data: votes } = await supabase
 		.from("vote")
@@ -18,7 +17,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
-	const supabase = await createSupabaseServerAdmin();
+	const supabase = await createSupabaseBrower();
 
 	const { data } = await supabase
 		.from("vote")

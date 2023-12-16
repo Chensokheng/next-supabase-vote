@@ -148,7 +148,7 @@ export default function Comment({ voteId }: { voteId: string }) {
 											)}
 										/>
 										<div>
-											<div className="flex items-center gap-1">
+											<div className="flex flex-col sm:flex-row sm:items-center gap-1">
 												<p>
 													{comment.users?.user_name}
 												</p>
