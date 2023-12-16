@@ -34,12 +34,14 @@ export default function Comment({ voteId }: { voteId: string }) {
 		};
 	}, []);
 	useEffect(() => {
+		const container = containerRef.current;
+
 		// Add scroll event listener when the component mounts
-		containerRef.current.addEventListener("scroll", handleScroll);
+		container.addEventListener("scroll", handleScroll);
 
 		// Remove scroll event listener when the component unmounts
 		return () => {
-			containerRef.current.removeEventListener("scroll", handleScroll);
+			container.removeEventListener("scroll", handleScroll);
 		};
 	}, []);
 	const handleScroll = () => {
