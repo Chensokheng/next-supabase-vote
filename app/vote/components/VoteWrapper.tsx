@@ -22,7 +22,7 @@ export default function VoteWrapper({ id }: { id: string }) {
 			<Pressence id={id} />
 			<div className=" w-full grid grid-cols-1 md:grid-cols-2 gap-10 ">
 				<Vote id={id} />
-				<Comment voteId={id} />
+				{/* <Comment voteId={id} /> */}
 			</div>
 		</div>
 	);
