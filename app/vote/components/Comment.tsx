@@ -15,24 +15,26 @@ import toast from "react-hot-toast";
 import { useComment, useUser } from "@/lib/hook";
 import { useQueryClient } from "@tanstack/react-query";
 import MessageLoading from "./MessageLoading";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
+import autoAnimate from "@formkit/auto-animate";
 
 export default function Comment({ voteId }: { voteId: string }) {
 	const { data } = useUser();
-	// const [comments, setComment] = useState<IComment[]>([]);
 	const [page, setPage] = useState(0);
 	const inputRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 	const containerRef = useRef() as React.MutableRefObject<HTMLDivElement>;
+	let commentRef = useRef() as any;
+
 	const [isVisible, setIsVisible] = useState(false);
 	const supabase = createSupabaseBrower();
 	const queryClient = useQueryClient();
 
 	const { data: comments } = useComment(voteId);
 	const [hasMore, setHasMore] = useState(false);
-	const [loading, setLoading] = useState(comments?.length === 0);
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		fetchComments();
+
 		// eslint-disable-next-line
 	}, []);
 
@@ -76,6 +78,7 @@ export default function Comment({ voteId }: { voteId: string }) {
 				queryClient.setQueryData(["vote-comment-" + voteId], () => [
 					...result.data,
 				]);
+				autoAnimate(commentRef.current);
 			} else {
 				queryClient.setQueryData(
 					["vote-comment-" + voteId],
@@ -118,7 +121,6 @@ export default function Comment({ voteId }: { voteId: string }) {
 			}
 		}
 	};
-	const [animationParent] = useAutoAnimate();
 
 	return (
 		<div className="w-full h-[40rem] border  rounded-md p-5 flex flex-col">
@@ -127,7 +129,7 @@ export default function Comment({ voteId }: { voteId: string }) {
 				ref={containerRef}
 			>
 				<div className="space-y-5">
-					<div ref={animationParent}>
+					<div ref={commentRef}>
 						{comments?.map((comment) => {
 							return (
 								<div
