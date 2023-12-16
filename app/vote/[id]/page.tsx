@@ -13,7 +13,7 @@ export async function generateStaticParams() {
 		.from("vote")
 		.select("id")
 		.filter("end_date", "gte", new Date().toISOString())
-		.limit(1);
+		.limit(10);
 	return votes as any;
 }
 

@@ -32,6 +32,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { IVote } from "@/lib/types";
 import { createSupabaseBrower } from "@/lib/supabase/client";
 import { updateVotePath } from "@/lib/actions/vote";
+import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
 	title: z
@@ -48,6 +49,7 @@ export default function EditVoteForm({
 	handleUpdateVote: (vote: IVote) => void;
 }) {
 	const supabase = createSupabaseBrower();
+	const router = useRouter();
 
 	const form = useForm<z.infer<typeof FormSchema>>({
 		mode: "onSubmit",
@@ -72,6 +74,7 @@ export default function EditVoteForm({
 			if (error?.message) {
 				throw error.message;
 			} else {
+				router.push("/vote/" + vote.id);
 				handleUpdateVote({
 					...vote,
 					...data,

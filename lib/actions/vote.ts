@@ -3,12 +3,13 @@
 import { redirect } from "next/navigation";
 import createSupabaseServer from "../supabase/server";
 import { Json } from "../types/supabase";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, unstable_noStore } from "next/cache";
 import createSupabaseServerAdmin from "../supabase/admin";
 import { getFromAndTo } from "../utils";
 import { NUMBER_OF_COMMENTS } from "../constant";
 
 export async function listActiveVotes() {
+	unstable_noStore();
 	const supabase = await createSupabaseServerAdmin();
 
 	return supabase
@@ -19,6 +20,7 @@ export async function listActiveVotes() {
 }
 
 export async function listExpiredVotes() {
+	unstable_noStore();
 	const supabase = await createSupabaseServerAdmin();
 
 	return supabase
@@ -56,15 +58,13 @@ export async function updateVotePath(id: string) {
 export async function getVoteComments(voteId: string, page: number) {
 	const { from, to } = getFromAndTo(page, NUMBER_OF_COMMENTS);
 
-	console.log(from, to);
 	const supabase = await createSupabaseServerAdmin();
-
 	const result = await supabase
 		.from("comments")
 		.select("*,users(*)")
 		.eq("vote_id", voteId)
-		.order("created_at", { ascending: true })
-		.range(from, to);
+		.range(from, to)
+		.order("created_at", { ascending: false });
 
 	return JSON.stringify(result);
 }
