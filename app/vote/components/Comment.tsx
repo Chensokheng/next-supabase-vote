@@ -66,13 +66,19 @@ export default function Comment({ voteId }: { voteId: string }) {
 											)}
 										/>
 										<div>
-											<p className="text-sm text-gray-400">
-												{new Date(
-													comment.created_at
-												).toDateString()}
+											<div className="flex items-center gap-1">
+												<p>
+													{comment.users?.user_name}
+												</p>
+												<p className="text-sm text-gray-400 ">
+													{new Date(
+														comment.created_at
+													).toDateString()}
+												</p>
+											</div>
+											<p className="font-medium">
+												{comment.text}
 											</p>
-											<p>{comment.users?.user_name}</p>
-											<p>{comment.text}</p>
 										</div>
 									</div>
 								</div>

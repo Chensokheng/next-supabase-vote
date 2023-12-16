@@ -9,7 +9,7 @@ import { getFromAndTo } from "../utils";
 import { NUMBER_OF_COMMENTS } from "../constant";
 
 export async function listActiveVotes() {
-	const supabase = await createSupabaseServer();
+	const supabase = await createSupabaseServerAdmin();
 
 	return supabase
 		.from("vote")
@@ -19,7 +19,7 @@ export async function listActiveVotes() {
 }
 
 export async function listExpiredVotes() {
-	const supabase = await createSupabaseServer();
+	const supabase = await createSupabaseServerAdmin();
 
 	return supabase
 		.from("vote")
