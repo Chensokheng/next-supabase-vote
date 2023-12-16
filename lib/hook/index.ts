@@ -7,6 +7,7 @@ import {
 import { createSupabaseBrower } from "../supabase/client";
 import toast from "react-hot-toast";
 import { getFromAndTo, sortObject } from "../utils";
+import { IComment } from "../types";
 
 export function useGetVote(id: string) {
 	const supabase = createSupabaseBrower();
@@ -54,31 +55,14 @@ export function useUser() {
 	});
 }
 
-export function useChat(room: string) {
+export function useComment(voteId: string) {
 	const supabase = createSupabaseBrower();
 
-	const fetchMessage = async ({ pageParam = 0 }) => {
-		const { from, to } = getFromAndTo(pageParam);
-		const { data } = await supabase
-			.from("messages")
-			.select("*,users(*)")
-			.eq("vote_id", room)
-			.order("created_at", { ascending: false })
-			.range(from, to);
-
-		return {
-			messages: data || [],
-			nextPage: data?.length! >= 4 ? pageParam + 1 : undefined,
-		};
-	};
-
-	const result = useInfiniteQuery({
-		initialPageParam: 0,
-		getNextPageParam: (lastPage, pages) => lastPage.nextPage,
-		queryKey: ["chat-" + room],
-		queryFn: fetchMessage,
-		placeholderData: keepPreviousData,
+	return useQuery({
+		queryKey: ["vote-comment-" + voteId],
+		queryFn: async () => {
+			return [] as IComment[];
+		},
+		staleTime: Infinity,
 	});
-
-	return result;
 }

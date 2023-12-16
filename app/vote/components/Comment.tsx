@@ -4,8 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
-import MessageLoading from "./MessageLoading";
-import { cn } from "@/lib/utils";
+import { cn, getFromAndTo } from "@/lib/utils";
 import { getVoteComments } from "@/lib/actions/vote";
 import { PostgrestSingleResponse } from "@supabase/supabase-js";
 import { IComment } from "@/lib/types";
@@ -13,33 +12,33 @@ import Image from "next/image";
 import { NUMBER_OF_COMMENTS } from "@/lib/constant";
 import { createSupabaseBrower } from "@/lib/supabase/client";
 import toast from "react-hot-toast";
-import { useUser } from "@/lib/hook";
+import { useComment, useUser } from "@/lib/hook";
+import { useQueryClient } from "@tanstack/react-query";
+import MessageLoading from "./MessageLoading";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 export default function Comment({ voteId }: { voteId: string }) {
 	const { data } = useUser();
-	const [loading, setLoading] = useState(true);
-	const [comments, setComment] = useState<IComment[]>([]);
-	const [hasMore, setHasMore] = useState(true);
+	// const [comments, setComment] = useState<IComment[]>([]);
 	const [page, setPage] = useState(0);
 	const inputRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 	const containerRef = useRef() as React.MutableRefObject<HTMLDivElement>;
 	const [isVisible, setIsVisible] = useState(false);
+	const supabase = createSupabaseBrower();
+	const queryClient = useQueryClient();
+
+	const { data: comments } = useComment(voteId);
+	const [hasMore, setHasMore] = useState(false);
+	const [loading, setLoading] = useState(comments?.length === 0);
 
 	useEffect(() => {
-		const timeout = setTimeout(() => {
-			document.getElementById("fetch-more")?.click();
-		}, 500);
-		return () => {
-			clearTimeout(timeout);
-		};
+		fetchComments();
+		// eslint-disable-next-line
 	}, []);
+
 	useEffect(() => {
 		const container = containerRef.current;
-
-		// Add scroll event listener when the component mounts
 		container.addEventListener("scroll", handleScroll);
-
-		// Remove scroll event listener when the component unmounts
 		return () => {
 			container.removeEventListener("scroll", handleScroll);
 		};
@@ -55,29 +54,37 @@ export default function Comment({ voteId }: { voteId: string }) {
 		containerRef.current.scrollTo({ top: 0, behavior: "smooth" });
 	};
 
-	const onSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		if (!loading) {
+	const fetchComments = async () => {
+		if (!loading && comments?.length === 0) {
 			setLoading(true);
 		}
+		const { from, to } = getFromAndTo(page, NUMBER_OF_COMMENTS);
 
-		if (hasMore) {
-			const result = JSON.parse(
-				await getVoteComments(voteId, page)
-			) as PostgrestSingleResponse<IComment[]>;
+		const result = await supabase
+			.from("comments")
+			.select("*,users(*)")
+			.eq("vote_id", voteId)
+			.range(from, to)
+			.order("created_at", { ascending: false });
 
-			if (result.data) {
-				if (result.data.length < NUMBER_OF_COMMENTS) {
-					setHasMore(false);
-				}
-				setPage(page + 1);
-				setComment((current) => [...current, ...result.data]);
+		if (result.data) {
+			if (result.data.length >= NUMBER_OF_COMMENTS) {
+				setHasMore(true);
+			}
+			setPage(page + 1);
+			if (page === 0) {
+				queryClient.setQueryData(["vote-comment-" + voteId], () => [
+					...result.data,
+				]);
+			} else {
+				queryClient.setQueryData(
+					["vote-comment-" + voteId],
+					(current: IComment[]) => [...current, ...result.data]
+				);
 			}
 		}
 		setLoading(false);
 	};
-
-	const supabase = createSupabaseBrower();
 
 	const writeComment = async () => {
 		const text = inputRef.current.value.trim();
@@ -96,7 +103,11 @@ export default function Comment({ voteId }: { voteId: string }) {
 					id: data?.user?.id!,
 				},
 			};
-			setComment((current) => [newComment, ...current]);
+			queryClient.setQueryData(
+				["vote-comment-" + voteId],
+				(current: IComment[]) => [newComment, ...current]
+			);
+
 			containerRef.current.scrollTo({ top: 0, behavior: "smooth" });
 			inputRef.current.value = "";
 			const { error } = await supabase
@@ -107,6 +118,7 @@ export default function Comment({ voteId }: { voteId: string }) {
 			}
 		}
 	};
+	const [animationParent] = useAutoAnimate();
 
 	return (
 		<div className="w-full h-[40rem] border  rounded-md p-5 flex flex-col">
@@ -114,9 +126,9 @@ export default function Comment({ voteId }: { voteId: string }) {
 				className="flex-1 overflow-y-auto pb-5 relative "
 				ref={containerRef}
 			>
-				<form onSubmit={onSubmit}>
-					<div className="space-y-5">
-						{comments.map((comment) => {
+				<div className="space-y-5">
+					<div ref={animationParent}>
+						{comments?.map((comment) => {
 							return (
 								<div
 									key={comment.id}
@@ -154,30 +166,37 @@ export default function Comment({ voteId }: { voteId: string }) {
 						})}
 					</div>
 
-					{loading && <MessageLoading />}
-
-					{hasMore && (
-						<Button
-							className={cn("w-full", { hidden: loading })}
-							variant="outline"
-							id="fetch-more"
-						>
-							Load more
-						</Button>
+					{loading ? (
+						<MessageLoading />
+					) : (
+						<>
+							{!comments?.length && <p>No comment 😅</p>}{" "}
+							{hasMore && (
+								<Button
+									className={cn("w-full")}
+									variant="outline"
+									id="fetch-more"
+									onClick={fetchComments}
+								>
+									Load more
+								</Button>
+							)}
+						</>
 					)}
-					<div
-						className={` sticky w-full bottom-0 ${
-							!isVisible ? "hidden" : ""
-						}`}
-						onClick={scrollToTop}
-					>
-						<div className="w-full flex items-center justify-center">
-							<div className=" h-10 w-10 rounded-full flex items-center justify-center bg-blue-500">
-								&#8593;
-							</div>
+				</div>
+
+				<div
+					className={` sticky w-full bottom-0 ${
+						!isVisible ? "hidden" : ""
+					}`}
+					onClick={scrollToTop}
+				>
+					<div className="w-full flex items-center justify-center">
+						<div className=" h-10 w-10 rounded-full flex items-center justify-center bg-blue-500">
+							&#8593;
 						</div>
 					</div>
-				</form>
+				</div>
 			</div>
 			<Input
 				ref={inputRef}
