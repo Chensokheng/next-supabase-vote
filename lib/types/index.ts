@@ -30,7 +30,7 @@ export type IVote = {
 	title: string;
 };
 
-export type IComments = {
+export type IComment = {
 	created_at: string;
 	id: string;
 	text: string;
@@ -42,4 +42,4 @@ export type IComments = {
 		id: string;
 		user_name: string | null;
 	} | null;
-}[];
+};
