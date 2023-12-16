@@ -29,3 +29,17 @@ export type IVote = {
 	id: string;
 	title: string;
 };
+
+export type IComments = {
+	created_at: string;
+	id: string;
+	text: string;
+	send_by: string;
+	vote_id: string;
+	users: {
+		avatar_url: string | null;
+		created_at: string;
+		id: string;
+		user_name: string | null;
+	} | null;
+}[];

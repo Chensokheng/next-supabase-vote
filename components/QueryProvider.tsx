@@ -5,16 +5,7 @@ import { ReactNode, useState } from "react";
 // Create a client
 
 export default function QueryProvider({ children }: { children: ReactNode }) {
-	const [queryClient] = useState(
-		() =>
-			new QueryClient({
-				defaultOptions: {
-					queries: {
-						staleTime: Infinity,
-					},
-				},
-			})
-	);
+	const [queryClient] = useState(() => new QueryClient());
 
 	return (
 		// Provide the client to your App

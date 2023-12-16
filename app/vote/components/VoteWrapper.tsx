@@ -2,7 +2,7 @@
 import AuthComponent from "@/app/auth/components/AuthComponent";
 import React from "react";
 import Vote from "./Vote";
-import Chat from "./Chat";
+import Comment from "./Comment";
 import { useUser } from "@/lib/hook";
 import Pressence from "./Pressence";
 import ChatListener from "./ChatListener";
@@ -22,8 +22,7 @@ export default function VoteWrapper({ id }: { id: string }) {
 			<Pressence id={id} />
 			<div className=" w-full grid grid-cols-1 md:grid-cols-2 gap-10 ">
 				<Vote id={id} />
-				<Chat voteId={id} />
-				<ChatListener voteId={id} />
+				<Comment voteId={id} />
 			</div>
 		</div>
 	);

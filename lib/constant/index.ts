@@ -23,3 +23,5 @@ export const rings = [
 ];
 
 export const emojis = ["🤔", "🤖", "🔔", "🎷", "📺", "🎨"];
+
+export const NUMBER_OF_COMMENTS = 10;

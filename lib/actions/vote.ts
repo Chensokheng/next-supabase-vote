@@ -4,6 +4,9 @@ import { redirect } from "next/navigation";
 import createSupabaseServer from "../supabase/server";
 import { Json } from "../types/supabase";
 import { revalidatePath } from "next/cache";
+import createSupabaseServerAdmin from "../supabase/admin";
+import { getFromAndTo } from "../utils";
+import { NUMBER_OF_COMMENTS } from "../constant";
 
 export async function listActiveVotes() {
 	const supabase = await createSupabaseServer();
@@ -48,4 +51,20 @@ export async function createVote(data: {
 export async function updateVotePath(id: string) {
 	revalidatePath("/vote/" + id);
 	revalidatePath("/");
+}
+
+export async function getVoteComments(voteId: string, page: number) {
+	const { from, to } = getFromAndTo(page, NUMBER_OF_COMMENTS);
+
+	console.log(from, to);
+	const supabase = await createSupabaseServerAdmin();
+
+	const result = await supabase
+		.from("comments")
+		.select("*,users(*)")
+		.eq("vote_id", voteId)
+		.order("created_at", { ascending: true })
+		.range(from, to);
+
+	return JSON.stringify(result);
 }

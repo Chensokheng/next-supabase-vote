@@ -35,3 +35,14 @@ export function getHightValueObjectKey(object: { [key: string]: number }) {
 	}
 	return hightKey;
 }
+
+export function getFromAndTo(page: number, itemPerPage = 3) {
+	let from = page * itemPerPage;
+	let to = from + itemPerPage;
+
+	if (page > 0) {
+		from += 1;
+	}
+
+	return { from, to };
+}

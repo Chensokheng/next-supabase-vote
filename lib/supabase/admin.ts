@@ -1,6 +1,4 @@
 "use server";
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
 import { Database } from "../types/supabase";
 import { createClient } from "@supabase/supabase-js";
 

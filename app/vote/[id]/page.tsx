@@ -4,21 +4,21 @@ import { redirect } from "next/navigation";
 import { createSupabaseBrower } from "@/lib/supabase/client";
 import VoteWrapper from "../components/VoteWrapper";
 import Info from "../components/Info";
+import createSupabaseServerAdmin from "@/lib/supabase/admin";
 
 export async function generateStaticParams() {
-	const supabase = createSupabaseBrower();
+	const supabase = await createSupabaseServerAdmin();
 
 	const { data: votes } = await supabase
 		.from("vote")
 		.select("id")
 		.filter("end_date", "gte", new Date().toISOString())
-		.limit(10);
-
+		.limit(1);
 	return votes as any;
 }
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
-	const supabase = createSupabaseBrower();
+	const supabase = await createSupabaseServerAdmin();
 
 	const { data } = await supabase
 		.from("vote")

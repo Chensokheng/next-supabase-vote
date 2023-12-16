@@ -1,7 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
+import {
+	useQuery,
+	keepPreviousData,
+	useQueryClient,
+	useInfiniteQuery,
+} from "@tanstack/react-query";
 import { createSupabaseBrower } from "../supabase/client";
 import toast from "react-hot-toast";
-import { sortObject } from "../utils";
+import { getFromAndTo, sortObject } from "../utils";
 
 export function useGetVote(id: string) {
 	const supabase = createSupabaseBrower();
@@ -33,6 +38,7 @@ export function useGetVote(id: string) {
 				isExpired: data?.end_date! < new Date().toISOString(),
 			};
 		},
+		staleTime: Infinity,
 	});
 }
 
@@ -44,21 +50,35 @@ export function useUser() {
 			const { data } = await supabase.auth.getSession();
 			return { user: data.session?.user };
 		},
+		staleTime: Infinity,
 	});
 }
 
 export function useChat(room: string) {
 	const supabase = createSupabaseBrower();
-	return useQuery({
-		queryKey: ["chat-" + room],
-		queryFn: async () => {
-			const { data } = await supabase
-				.from("messages")
-				.select("*,users(*)")
-				.eq("vote_id", room)
-				.limit(20);
 
-			return { messages: data || [] };
-		},
+	const fetchMessage = async ({ pageParam = 0 }) => {
+		const { from, to } = getFromAndTo(pageParam);
+		const { data } = await supabase
+			.from("messages")
+			.select("*,users(*)")
+			.eq("vote_id", room)
+			.order("created_at", { ascending: false })
+			.range(from, to);
+
+		return {
+			messages: data || [],
+			nextPage: data?.length! >= 4 ? pageParam + 1 : undefined,
+		};
+	};
+
+	const result = useInfiniteQuery({
+		initialPageParam: 0,
+		getNextPageParam: (lastPage, pages) => lastPage.nextPage,
+		queryKey: ["chat-" + room],
+		queryFn: fetchMessage,
+		placeholderData: keepPreviousData,
 	});
+
+	return result;
 }

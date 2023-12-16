@@ -9,38 +9,38 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      messages: {
+      comments: {
         Row: {
           created_at: string
           id: string
-          message: string
           send_by: string
+          text: string
           vote_id: string
         }
         Insert: {
           created_at?: string
           id?: string
-          message: string
           send_by?: string
+          text: string
           vote_id: string
         }
         Update: {
           created_at?: string
           id?: string
-          message?: string
           send_by?: string
+          text?: string
           vote_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "messages_send_by_fkey"
+            foreignKeyName: "comments_send_by_fkey"
             columns: ["send_by"]
             isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "messages_vote_id_fkey"
+            foreignKeyName: "comments_vote_id_fkey"
             columns: ["vote_id"]
             isOneToOne: false
             referencedRelation: "vote"
