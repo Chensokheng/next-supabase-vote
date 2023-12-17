@@ -49,7 +49,6 @@ export async function createVote(data: {
 
 export async function updateVotePath(id: string) {
 	revalidatePath("/vote/" + id);
-	revalidatePath("/");
 }
 
 export async function getVoteById(id: string) {

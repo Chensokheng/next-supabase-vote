@@ -29,9 +29,7 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { IVote } from "@/lib/types";
-import { createSupabaseBrower } from "@/lib/supabase/client";
-import { updateVoteById, updateVotePath } from "@/lib/actions/vote";
-import { useRouter } from "next/navigation";
+import { updateVoteById } from "@/lib/actions/vote";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
@@ -70,8 +68,9 @@ export default function EditVoteForm({ vote }: { vote: IVote }) {
 					<AlertCircle className="h-4 w-4" />
 					<AlertTitle>Heads up!</AlertTitle>
 					<AlertDescription className="text-gray-400">
-						You change may not take effect immediately on page vote/
-						{vote.id} due to speed of page revalidation.
+						Your change may not take effect immediately on page
+						vote/
+						{vote.id} due to speed page revalidation.
 					</AlertDescription>
 				</Alert>
 				<FormField
