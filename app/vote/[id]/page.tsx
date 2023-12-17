@@ -55,7 +55,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 		.single();
 
 	if (!vote) {
-		return redirect("/");
+		return redirect("/404");
 	}
 
 	return (
