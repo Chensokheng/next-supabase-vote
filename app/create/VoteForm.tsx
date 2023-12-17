@@ -16,14 +16,19 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { useRef, useState } from "react";
-import { Input } from "./ui/input";
+import { Input } from "../../components/ui/input";
 import { CalendarIcon, TrashIcon } from "@radix-ui/react-icons";
 import toast from "react-hot-toast";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "../../components/ui/popover";
 import { cn, nextWeek } from "@/lib/utils";
 import { format } from "date-fns";
-import { Calendar } from "./ui/calendar";
+import { Calendar } from "../../components/ui/calendar";
 import { createVote } from "@/lib/actions/vote";
+import { Textarea } from "../../components/ui/textarea";
 
 const FormSchema = z
 	.object({
@@ -36,6 +41,7 @@ const FormSchema = z
 		title: z
 			.string()
 			.min(5, { message: "Title has a minimum characters of 5" }),
+		description: z.string().optional(),
 		end_date: z.date(),
 	})
 	.refine(
@@ -101,6 +107,27 @@ export default function VoteForm() {
 									{...field}
 								/>
 							</FormControl>
+
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="description"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Title</FormLabel>
+							<FormControl>
+								<Textarea
+									placeholder="(optional) your vote description.."
+									{...field}
+									className="resize-none"
+								/>
+							</FormControl>
+							<FormDescription>
+								This is be for SEO description
+							</FormDescription>
 
 							<FormMessage />
 						</FormItem>

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import {
 	Form,
 	FormControl,
+	FormDescription,
 	FormField,
 	FormItem,
 	FormLabel,
@@ -29,59 +30,33 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { IVote } from "@/lib/types";
 import { createSupabaseBrower } from "@/lib/supabase/client";
-import { updateVotePath } from "@/lib/actions/vote";
+import { updateVoteById, updateVotePath } from "@/lib/actions/vote";
 import { useRouter } from "next/navigation";
+import { Textarea } from "@/components/ui/textarea";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 const FormSchema = z.object({
 	title: z
 		.string()
 		.min(5, { message: "Title has a minimum characters of 5" }),
 	end_date: z.date(),
+	description: z.string().optional(),
 });
 
-export default function EditVoteForm({
-	vote,
-	handleUpdateVote,
-}: {
-	vote: IVote;
-	handleUpdateVote: (vote: IVote) => void;
-}) {
-	const supabase = createSupabaseBrower();
-
+export default function EditVoteForm({ vote }: { vote: IVote }) {
 	const form = useForm<z.infer<typeof FormSchema>>({
 		mode: "onSubmit",
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
 			title: vote.title,
 			end_date: new Date(vote.end_date),
+			description: vote.description || "",
 		},
 	});
 
 	async function onSubmit(data: z.infer<typeof FormSchema>) {
-		const updateVote = async () => {
-			const { error } = await supabase
-				.from("vote")
-				.update({
-					title: data.title,
-					end_date: data.end_date.toISOString(),
-				})
-				.eq("id", vote.id);
-			await updateVotePath(vote.id);
-
-			if (error?.message) {
-				throw error.message;
-			} else {
-				handleUpdateVote({
-					...vote,
-					...data,
-					end_date: data.end_date.toISOString(),
-				});
-
-				document.getElementById("close-sheet")?.click();
-			}
-		};
-
-		toast.promise(updateVote(), {
+		toast.promise(updateVoteById(data, vote.id), {
 			loading: "update...",
 			success: "Successfully update",
 			error: (err) => "Fail to update vote. " + err.toString(),
@@ -91,6 +66,14 @@ export default function EditVoteForm({
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+				<Alert className="ring-2">
+					<AlertCircle className="h-4 w-4" />
+					<AlertTitle>Heads up!</AlertTitle>
+					<AlertDescription className="text-gray-400">
+						You change may not take effect immediately on page vote/
+						{vote.id} due to speed of page revalidation.
+					</AlertDescription>
+				</Alert>
 				<FormField
 					control={form.control}
 					name="title"
@@ -101,6 +84,7 @@ export default function EditVoteForm({
 								<Input
 									placeholder="vote for best of... "
 									{...field}
+									autoFocus
 								/>
 							</FormControl>
 
@@ -108,7 +92,27 @@ export default function EditVoteForm({
 						</FormItem>
 					)}
 				/>
+				<FormField
+					control={form.control}
+					name="description"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Description</FormLabel>
+							<FormControl>
+								<Textarea
+									placeholder="(optional) your vote description.."
+									{...field}
+									className="resize-none"
+								/>
+							</FormControl>
+							<FormDescription>
+								This is be for SEO description
+							</FormDescription>
 
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
 				<FormField
 					control={form.control}
 					name="end_date"

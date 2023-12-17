@@ -28,8 +28,6 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Link1Icon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
-import EditSheet from "./components/EditSheet";
-import EditVoteForm from "./components/EditVoteForm";
 import {
 	Popover,
 	PopoverContent,
@@ -38,6 +36,7 @@ import {
 import toast from "react-hot-toast";
 import { createSupabaseBrower } from "@/lib/supabase/client";
 import { updateVotePath } from "@/lib/actions/vote";
+import Link from "next/link";
 
 export default function ProfileTable({ data }: { data: IVote[] }) {
 	const [votes, setVotes] = useState(data);
@@ -76,18 +75,6 @@ export default function ProfileTable({ data }: { data: IVote[] }) {
 		});
 	};
 
-	const updateVote = (upateVote: IVote) => {
-		setVotes((currentVotes) =>
-			currentVotes.map((vote) => {
-				if (vote.id === upateVote.id) {
-					return upateVote;
-				} else {
-					return vote;
-				}
-			})
-		);
-	};
-
 	return (
 		<div className=" rounded-md border">
 			<Table>
@@ -105,8 +92,8 @@ export default function ProfileTable({ data }: { data: IVote[] }) {
 					{votes.map((vote) => (
 						<TableRow key={vote.id}>
 							<TableCell className="font-medium">
-								{vote.title.length > 30
-									? vote.title.slice(0, 30) + " ..."
+								{vote.title.length > 50
+									? vote.title.slice(0, 50) + " ..."
 									: vote.title}
 							</TableCell>
 							<TableCell className="font-medium">
@@ -182,25 +169,16 @@ export default function ProfileTable({ data }: { data: IVote[] }) {
 												</AlertDialogFooter>
 											</AlertDialogContent>
 										</AlertDialog>
-
-										<EditSheet
-											trigger={
-												<Button
-													variant="ghost"
-													className="flex items-center justify-between cursor-pointer w-full"
-												>
-													Edit <Pencil1Icon />
-												</Button>
-											}
-											editForm={
-												<EditVoteForm
-													vote={vote}
-													handleUpdateVote={
-														updateVote
-													}
-												/>
-											}
-										/>
+										<Link
+											href={`/edit/${vote.id}?id=${vote.created_by}`}
+										>
+											<Button
+												variant="ghost"
+												className="flex items-center justify-between cursor-pointer w-full"
+											>
+												Edit <Pencil1Icon />
+											</Button>
+										</Link>
 
 										<Button
 											variant="ghost"

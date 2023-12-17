@@ -27,8 +27,6 @@ export default function Vote({ id }: { id: string }) {
 					filter: "vote_id=eq." + id,
 				},
 				(payload) => {
-					console.log(payload.new.options);
-
 					queryClient.setQueryData(
 						["vote-" + id],
 						(currentVote: any) => ({

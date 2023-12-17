@@ -61,12 +61,16 @@ export async function middleware(request: NextRequest) {
 
 	if (
 		!data.session &&
-		(pathname.startsWith("/vote") || pathname === "/profile")
+		(pathname.startsWith("/create") ||
+			pathname === "/profile" ||
+			pathname.startsWith("/edit"))
 	) {
-		return NextResponse.redirect(
-			new URL("/auth?next=" + pathname, request.url)
-		);
+		return NextResponse.redirect(new URL("/", request.url));
 	} else if (pathname.startsWith("/profile")) {
+		if (searchParams.get("id") !== data.session?.user.id) {
+			return NextResponse.redirect(new URL("/", request.url));
+		}
+	} else if (pathname.startsWith("/edit")) {
 		if (searchParams.get("id") !== data.session?.user.id) {
 			return NextResponse.redirect(new URL("/", request.url));
 		}
@@ -74,5 +78,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-	matcher: ["/profile"],
+	matcher: ["/profile", "/create", "/edit/:path*"],
 };

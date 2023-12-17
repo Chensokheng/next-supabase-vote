@@ -25,6 +25,7 @@ export type IVoteLog = {
 export type IVote = {
 	created_at: string;
 	created_by: string;
+	description?: string;
 	end_date: string;
 	id: string;
 	title: string;

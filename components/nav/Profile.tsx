@@ -39,23 +39,23 @@ export default function Profile({ user }: { user: User | undefined }) {
 							Profile <GearIcon />
 						</Button>
 					</Link>
-					<Button
-						className="w-full flex items-center justify-between rounded-none "
-						variant="ghost"
-						onClick={() => {
-							document.getElementById("open-vote-form")?.click();
-						}}
-					>
-						Create <PlusIcon />
-					</Button>
+					<Link href="/vote/create">
+						<Button
+							className="w-full flex items-center justify-between rounded-none "
+							variant="ghost"
+							onClick={() => {
+								document
+									.getElementById("close-popover")
+									?.click();
+							}}
+						>
+							Create <PlusIcon />
+						</Button>
+					</Link>
+
 					<Logout />
 				</PopoverContent>
 			</Popover>
-			<VoteSheet
-				trigger={
-					<button id="open-vote-form" className=" hidden"></button>
-				}
-			/>
 		</>
 	);
 }

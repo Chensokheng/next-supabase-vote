@@ -84,6 +84,7 @@ export interface Database {
         Row: {
           created_at: string
           created_by: string
+          description: string | null
           end_date: string
           id: string
           title: string
@@ -91,6 +92,7 @@ export interface Database {
         Insert: {
           created_at?: string
           created_by: string
+          description?: string | null
           end_date: string
           id?: string
           title: string
@@ -98,6 +100,7 @@ export interface Database {
         Update: {
           created_at?: string
           created_by?: string
+          description?: string | null
           end_date?: string
           id?: string
           title?: string
@@ -177,6 +180,7 @@ export interface Database {
           options: Json
           title: string
           end_date: string
+          description: string
         }
         Returns: string
       }
