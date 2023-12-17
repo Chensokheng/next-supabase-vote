@@ -47,7 +47,6 @@ export default function EditVoteForm({
 	handleUpdateVote: (vote: IVote) => void;
 }) {
 	const supabase = createSupabaseBrower();
-	const router = useRouter();
 
 	const form = useForm<z.infer<typeof FormSchema>>({
 		mode: "onSubmit",
@@ -72,7 +71,6 @@ export default function EditVoteForm({
 			if (error?.message) {
 				throw error.message;
 			} else {
-				router.push("/vote/" + vote.id);
 				handleUpdateVote({
 					...vote,
 					...data,

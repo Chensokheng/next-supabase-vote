@@ -1,12 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
 	Sheet,
-	SheetClose,
 	SheetContent,
 	SheetDescription,
-	SheetFooter,
 	SheetHeader,
 	SheetTitle,
 	SheetTrigger,
@@ -27,8 +22,8 @@ export default function EditSheet({
 				<SheetHeader>
 					<SheetTitle>Edit profile</SheetTitle>
 					<SheetDescription>
-						Make changes to your profile here. Click save when youre
-						done.
+						Your change may not update immediately due to the speed
+						of revalidate page📌.
 					</SheetDescription>
 				</SheetHeader>
 				{editForm}
