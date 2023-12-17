@@ -3,10 +3,10 @@ import { v4 as uuidv4 } from "uuid";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { cn, getFromAndTo } from "@/lib/utils";
-import { getVoteComments } from "@/lib/actions/vote";
-import { PostgrestSingleResponse } from "@supabase/supabase-js";
+import { MoreHorizontal } from "lucide-react";
+
 import { IComment } from "@/lib/types";
 import Image from "next/image";
 import { NUMBER_OF_COMMENTS } from "@/lib/constant";
@@ -16,6 +16,23 @@ import { useComment, useUser } from "@/lib/hook";
 import { useQueryClient } from "@tanstack/react-query";
 import MessageLoading from "./MessageLoading";
 import autoAnimate from "@formkit/auto-animate";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
+import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 
 export default function Comment({ voteId }: { voteId: string }) {
 	const { data } = useUser();
@@ -147,16 +164,29 @@ export default function Comment({ voteId }: { voteId: string }) {
 												" rounded-full ring-2"
 											)}
 										/>
-										<div>
-											<div className="flex flex-col sm:flex-row sm:items-center gap-1">
-												<p>
-													{comment.users?.user_name}
-												</p>
-												<p className="text-sm text-gray-400 ">
-													{new Date(
-														comment.created_at
-													).toDateString()}
-												</p>
+										<div className="w-full">
+											<div className="flex items-center justify-between w-full">
+												<div className="flex flex-col sm:flex-row sm:items-center gap-1">
+													<p>
+														{
+															comment.users
+																?.user_name
+														}
+													</p>
+													<p className="text-sm text-gray-400 ">
+														{new Date(
+															comment.created_at
+														).toDateString()}
+													</p>
+												</div>
+												{comment.send_by ===
+													data?.user?.id && (
+													<CommentActions
+														id={comment.id}
+														voteId={voteId}
+														text={comment.text}
+													/>
+												)}
 											</div>
 											<p className="font-medium">
 												{comment.text}
@@ -214,3 +244,127 @@ export default function Comment({ voteId }: { voteId: string }) {
 		</div>
 	);
 }
+
+const CommentActions = ({
+	id,
+	voteId,
+	text,
+}: {
+	id: string;
+	voteId: string;
+	text: string;
+}) => {
+	const supabase = createSupabaseBrower();
+	const queryClient = useQueryClient();
+	const inputRef = useRef() as React.MutableRefObject<HTMLInputElement>;
+	const deleteComment = async () => {
+		queryClient.setQueryData(
+			["vote-comment-" + voteId],
+			(currentComments: IComment[]) => [
+				...currentComments.filter((comment) => comment.id !== id),
+			]
+		);
+		const { error } = await supabase.from("comments").delete().eq("id", id);
+		if (error) {
+			toast.error("Fail to remove comment.");
+		}
+	};
+
+	const editComment = async () => {
+		const editText = inputRef.current.value.trim();
+		if (editText === text || !editText) {
+			return null;
+		} else {
+			queryClient.setQueryData(
+				["vote-comment-" + voteId],
+				(currentComments: IComment[]) => [
+					...currentComments.map((comment) => {
+						if (comment.id === id) {
+							comment.text = editText;
+							return comment;
+						}
+						return comment;
+					}),
+				]
+			);
+			document.getElementById("close-action")?.click();
+			const { error } = await supabase
+				.from("comments")
+				.update({ text: editText })
+				.eq("id", id);
+			if (error) {
+				toast.error("Fail to update comment.");
+			}
+		}
+	};
+
+	return (
+		<Popover>
+			<PopoverTrigger asChild>
+				<Button
+					variant="ghost"
+					className="h-8 w-8 p-0"
+					id="close-action"
+				>
+					<span className="sr-only">Open menu</span>
+					<MoreHorizontal className="h-4 w-4" />
+				</Button>
+			</PopoverTrigger>
+			<PopoverContent align="end" className="w-[200px]">
+				<AlertDialog>
+					<AlertDialogTrigger asChild>
+						<Button
+							variant="ghost"
+							className="flex items-center justify-between cursor-pointer w-full"
+						>
+							Delete <TrashIcon />
+						</Button>
+					</AlertDialogTrigger>
+					<AlertDialogContent>
+						<AlertDialogHeader>
+							<AlertDialogTitle>
+								Are you absolutely sure?
+							</AlertDialogTitle>
+							<AlertDialogDescription>
+								This action cannot be undone. This will
+								permanently delete your account and remove your
+								data from our servers.
+							</AlertDialogDescription>
+						</AlertDialogHeader>
+						<AlertDialogFooter>
+							<AlertDialogCancel>Cancel</AlertDialogCancel>
+							<AlertDialogAction onClick={deleteComment}>
+								Continue
+							</AlertDialogAction>
+						</AlertDialogFooter>
+					</AlertDialogContent>
+				</AlertDialog>
+				<AlertDialog>
+					<AlertDialogTrigger asChild>
+						<Button
+							variant="ghost"
+							className="flex items-center justify-between cursor-pointer w-full"
+						>
+							Edit <Pencil1Icon />
+						</Button>
+					</AlertDialogTrigger>
+					<AlertDialogContent>
+						<AlertDialogHeader>
+							<AlertDialogTitle>Edit</AlertDialogTitle>
+						</AlertDialogHeader>
+						<AlertDialogDescription>
+							Edit your comment.
+						</AlertDialogDescription>
+						<Input defaultValue={text} ref={inputRef} />
+						<AlertDialogFooter>
+							<AlertDialogCancel>Cancel</AlertDialogCancel>
+							<AlertDialogAction onClick={editComment}>
+								Continue
+							</AlertDialogAction>
+						</AlertDialogFooter>
+					</AlertDialogContent>
+				</AlertDialog>
+			</PopoverContent>
+		</Popover>
+	);
+};
