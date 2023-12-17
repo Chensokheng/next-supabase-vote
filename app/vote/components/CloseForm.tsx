@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 export default function CloseForm() {
 	useEffect(() => {

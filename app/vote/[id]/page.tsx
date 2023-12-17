@@ -62,11 +62,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 		<>
 			<div className="w-full flex items-center justify-center  min-h-70vh">
 				<div className="w-full space-y-20">
-					<Info
-						title={vote?.title}
-						endDate={vote.end_date}
-						id={vote.id}
-					/>
+					<Info title={vote?.title} endDate={vote.end_date} />
 					<VoteWrapper id={params.id} />
 				</div>
 			</div>

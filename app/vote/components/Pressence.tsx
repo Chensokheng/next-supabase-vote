@@ -1,7 +1,6 @@
 "use client";
 import { useUser } from "@/lib/hook";
 import { createSupabaseBrower } from "@/lib/supabase/client";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { PersonIcon } from "@radix-ui/react-icons";
 import React, { useEffect, useState } from "react";
 

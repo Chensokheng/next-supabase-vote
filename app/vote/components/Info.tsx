@@ -1,16 +1,15 @@
 "use client";
-import { PersonIcon } from "@radix-ui/react-icons";
 import React from "react";
-import TimeCountDown from "./TimeCountDown";
+import dynamic from "next/dynamic";
+
+const TimeCountDown = dynamic(() => import("./TimeCountDown"), { ssr: false });
 
 export default function Info({
 	title,
 	endDate,
-	id,
 }: {
 	title: string;
 	endDate: string;
-	id: string;
 }) {
 	const tomorrow = new Date(endDate);
 	tomorrow.setHours(0, 0, 0, 0);
