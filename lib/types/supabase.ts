@@ -13,6 +13,7 @@ export interface Database {
         Row: {
           created_at: string
           id: string
+          is_edit: boolean
           send_by: string
           text: string
           vote_id: string
@@ -20,6 +21,7 @@ export interface Database {
         Insert: {
           created_at?: string
           id?: string
+          is_edit?: boolean
           send_by?: string
           text: string
           vote_id: string
@@ -27,6 +29,7 @@ export interface Database {
         Update: {
           created_at?: string
           id?: string
+          is_edit?: boolean
           send_by?: string
           text?: string
           vote_id?: string

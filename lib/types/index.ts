@@ -36,6 +36,7 @@ export type IComment = {
 	text: string;
 	send_by: string;
 	vote_id: string;
+	is_edit: boolean;
 	users: {
 		avatar_url: string | null;
 		created_at: string;

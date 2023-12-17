@@ -115,6 +115,7 @@ export default function Comment({ voteId }: { voteId: string }) {
 				send_by: data?.user?.id!,
 				created_at: new Date().toISOString(),
 				vote_id: voteId,
+				is_edit: false,
 				text,
 				users: {
 					user_name: data?.user?.user_metadata?.user_name,
@@ -141,8 +142,19 @@ export default function Comment({ voteId }: { voteId: string }) {
 
 	return (
 		<div className="w-full h-[40rem] border  rounded-md p-5 flex flex-col">
+			<Input
+				ref={inputRef}
+				autoFocus
+				placeholder="comment.."
+				className=" z-20"
+				onKeyDown={(e) => {
+					if (e.key === "Enter") {
+						writeComment();
+					}
+				}}
+			/>
 			<div
-				className="flex-1 overflow-y-auto pb-5 relative "
+				className="flex-1 overflow-y-auto pt-10 relative "
 				ref={containerRef}
 			>
 				<div className="space-y-5">
@@ -178,6 +190,11 @@ export default function Comment({ voteId }: { voteId: string }) {
 															comment.created_at
 														).toDateString()}
 													</p>
+													{comment.is_edit && (
+														<p className="text-gray-400">
+															edited
+														</p>
+													)}
 												</div>
 												{comment.send_by ===
 													data?.user?.id && (
@@ -230,17 +247,6 @@ export default function Comment({ voteId }: { voteId: string }) {
 					</div>
 				</div>
 			</div>
-			<Input
-				ref={inputRef}
-				autoFocus
-				placeholder="comment.."
-				className=" z-20"
-				onKeyDown={(e) => {
-					if (e.key === "Enter") {
-						writeComment();
-					}
-				}}
-			/>
 		</div>
 	);
 }
@@ -281,13 +287,14 @@ const CommentActions = ({
 					...currentComments.map((comment) => {
 						if (comment.id === id) {
 							comment.text = editText;
+							comment.is_edit = true;
 							return comment;
 						}
 						return comment;
 					}),
 				]
 			);
-			document.getElementById("close-action")?.click();
+			document.getElementById("close-action-" + id)?.click();
 			const { error } = await supabase
 				.from("comments")
 				.update({ text: editText })
@@ -304,7 +311,7 @@ const CommentActions = ({
 				<Button
 					variant="ghost"
 					className="h-8 w-8 p-0"
-					id="close-action"
+					id={`close-action-${id}`}
 				>
 					<span className="sr-only">Open menu</span>
 					<MoreHorizontal className="h-4 w-4" />
