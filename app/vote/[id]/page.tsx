@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { createSupabaseBrower } from "@/lib/supabase/client";
 import VoteWrapper from "../components/VoteWrapper";
 import Info from "../components/Info";
+import { DEFAUTL_DESCRIPTION } from "@/lib/constant";
 
 export async function generateStaticParams() {
 	const supabase = await createSupabaseBrower();
@@ -32,7 +33,9 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
 		authors: {
 			name: data?.users?.user_name,
 		},
+		description: data?.description || DEFAUTL_DESCRIPTION,
 		openGraph: {
+			description: data?.description || DEFAUTL_DESCRIPTION,
 			title: data?.title,
 			url: url + "vote/" + data?.id,
 			siteName: "Daily Vote",
