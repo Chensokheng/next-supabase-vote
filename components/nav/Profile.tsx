@@ -38,7 +38,7 @@ export default function Profile({ user }: { user: User | undefined }) {
 							Profile <GearIcon />
 						</Button>
 					</Link>
-					<Link href="/vote/create">
+					<Link href="/create">
 						<Button
 							className="w-full flex items-center justify-between rounded-none "
 							variant="ghost"
