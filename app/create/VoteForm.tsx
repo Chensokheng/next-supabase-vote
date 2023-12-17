@@ -117,7 +117,7 @@ export default function VoteForm() {
 					name="description"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Title</FormLabel>
+							<FormLabel>Description</FormLabel>
 							<FormControl>
 								<Textarea
 									placeholder="(optional) your vote description.."

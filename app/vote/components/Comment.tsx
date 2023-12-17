@@ -12,7 +12,7 @@ import Image from "next/image";
 import { NUMBER_OF_COMMENTS } from "@/lib/constant";
 import { createSupabaseBrower } from "@/lib/supabase/client";
 import toast from "react-hot-toast";
-import { useComment, useUser } from "@/lib/hook";
+import { useComment, useGetVote, useUser } from "@/lib/hook";
 import { useQueryClient } from "@tanstack/react-query";
 import MessageLoading from "./MessageLoading";
 import autoAnimate from "@formkit/auto-animate";
@@ -39,7 +39,8 @@ export default function Comment({ voteId }: { voteId: string }) {
 	const [page, setPage] = useState(0);
 	const inputRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 	const containerRef = useRef() as React.MutableRefObject<HTMLDivElement>;
-	let commentRef = useRef() as any;
+	let commentRef = useRef() as React.MutableRefObject<HTMLDivElement>;
+	const { data: vote } = useGetVote(voteId);
 
 	const [isVisible, setIsVisible] = useState(false);
 	const supabase = createSupabaseBrower();
@@ -51,7 +52,6 @@ export default function Comment({ voteId }: { voteId: string }) {
 
 	useEffect(() => {
 		fetchComments();
-
 		// eslint-disable-next-line
 	}, []);
 
@@ -143,6 +143,7 @@ export default function Comment({ voteId }: { voteId: string }) {
 	return (
 		<div className="w-full h-[40rem] border  rounded-md p-5 flex flex-col">
 			<Input
+				disabled={vote?.isExpired}
 				ref={inputRef}
 				autoFocus
 				placeholder="comment.."

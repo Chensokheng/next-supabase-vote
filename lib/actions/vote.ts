@@ -3,9 +3,7 @@
 import { redirect } from "next/navigation";
 import createSupabaseServer from "../supabase/server";
 import { Json } from "../types/supabase";
-import { revalidatePath, unstable_noStore } from "next/cache";
-import createSupabaseServerAdmin from "../supabase/admin";
-import { IVote } from "../types";
+import { revalidatePath } from "next/cache";
 
 export async function listActiveVotes() {
 	const supabase = await createSupabaseServer();

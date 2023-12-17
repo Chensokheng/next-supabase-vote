@@ -76,124 +76,141 @@ export default function ProfileTable({ data }: { data: IVote[] }) {
 	};
 
 	return (
-		<div className=" rounded-md border">
-			<Table>
-				<TableHeader>
-					<TableRow>
-						<TableHead>Title</TableHead>
-						<TableHead>Status</TableHead>
-						<TableHead>Created At</TableHead>
-						<TableHead>End At</TableHead>
-						<TableHead className="w-[100px]"></TableHead>
-					</TableRow>
-				</TableHeader>
+		<>
+			<div className=" rounded-md border">
+				<Table>
+					<TableHeader>
+						<TableRow>
+							<TableHead>Title</TableHead>
+							<TableHead>Status</TableHead>
+							<TableHead>Created At</TableHead>
+							<TableHead>End At</TableHead>
+							<TableHead className="w-[100px]"></TableHead>
+						</TableRow>
+					</TableHeader>
 
-				<TableBody ref={animationParent}>
-					{votes.map((vote) => (
-						<TableRow key={vote.id}>
-							<TableCell className="font-medium">
-								{vote.title.length > 50
-									? vote.title.slice(0, 50) + " ..."
-									: vote.title}
-							</TableCell>
-							<TableCell className="font-medium">
-								{vote.end_date > new Date().toISOString() ? (
-									<Badge className=" bg-green-500">
-										Active
-									</Badge>
-								) : (
-									<Badge className=" bg-red-300">
-										Expired
-									</Badge>
-								)}
-							</TableCell>
-							<TableCell>
-								{new Date(vote.created_at).toDateString()}
-							</TableCell>
-							<TableCell>
-								{new Date(vote.end_date).toDateString()}
-							</TableCell>
-							<TableCell>
-								<Popover>
-									<PopoverTrigger asChild>
-										<Button
-											variant="ghost"
-											className="h-8 w-8 p-0"
+					<TableBody ref={animationParent}>
+						{votes.map((vote) => (
+							<TableRow key={vote.id}>
+								<TableCell className="font-medium">
+									{vote.title.length > 50
+										? vote.title.slice(0, 50) + " ..."
+										: vote.title}
+								</TableCell>
+								<TableCell className="font-medium">
+									{vote.end_date >
+									new Date().toISOString() ? (
+										<Badge className=" bg-green-500">
+											Active
+										</Badge>
+									) : (
+										<Badge className=" bg-red-300">
+											Expired
+										</Badge>
+									)}
+								</TableCell>
+								<TableCell>
+									{new Date(vote.created_at).toDateString()}
+								</TableCell>
+								<TableCell>
+									{new Date(vote.end_date).toDateString()}
+								</TableCell>
+								<TableCell>
+									<Popover>
+										<PopoverTrigger asChild>
+											<Button
+												variant="ghost"
+												className="h-8 w-8 p-0"
+											>
+												<span className="sr-only">
+													Open menu
+												</span>
+												<MoreHorizontal className="h-4 w-4" />
+											</Button>
+										</PopoverTrigger>
+										<PopoverContent
+											align="end"
+											className="w-[200px]"
 										>
-											<span className="sr-only">
-												Open menu
-											</span>
-											<MoreHorizontal className="h-4 w-4" />
-										</Button>
-									</PopoverTrigger>
-									<PopoverContent
-										align="end"
-										className="w-[200px]"
-									>
-										<AlertDialog>
-											<AlertDialogTrigger asChild>
+											<AlertDialog>
+												<AlertDialogTrigger asChild>
+													<Button
+														variant="ghost"
+														className="flex items-center justify-between cursor-pointer w-full"
+													>
+														Delete <TrashIcon />
+													</Button>
+												</AlertDialogTrigger>
+												<AlertDialogContent>
+													<AlertDialogHeader>
+														<AlertDialogTitle>
+															Are you absolutely
+															sure?
+														</AlertDialogTitle>
+														<AlertDialogDescription>
+															This action cannot
+															be undone. This will
+															permanently delete
+															your account and
+															remove your data
+															from our servers.
+														</AlertDialogDescription>
+													</AlertDialogHeader>
+													<AlertDialogFooter>
+														<AlertDialogCancel>
+															Cancel
+														</AlertDialogCancel>
+														<AlertDialogAction
+															onClick={() =>
+																toastDelete(
+																	vote.id,
+																	vote.title
+																)
+															}
+														>
+															Continue
+														</AlertDialogAction>
+													</AlertDialogFooter>
+												</AlertDialogContent>
+											</AlertDialog>
+											<Link
+												href={`/edit/${vote.id}?user=${vote.created_by}`}
+											>
 												<Button
 													variant="ghost"
 													className="flex items-center justify-between cursor-pointer w-full"
 												>
-													Delete <TrashIcon />
+													Edit <Pencil1Icon />
 												</Button>
-											</AlertDialogTrigger>
-											<AlertDialogContent>
-												<AlertDialogHeader>
-													<AlertDialogTitle>
-														Are you absolutely sure?
-													</AlertDialogTitle>
-													<AlertDialogDescription>
-														This action cannot be
-														undone. This will
-														permanently delete your
-														account and remove your
-														data from our servers.
-													</AlertDialogDescription>
-												</AlertDialogHeader>
-												<AlertDialogFooter>
-													<AlertDialogCancel>
-														Cancel
-													</AlertDialogCancel>
-													<AlertDialogAction
-														onClick={() =>
-															toastDelete(
-																vote.id,
-																vote.title
-															)
-														}
-													>
-														Continue
-													</AlertDialogAction>
-												</AlertDialogFooter>
-											</AlertDialogContent>
-										</AlertDialog>
-										<Link
-											href={`/edit/${vote.id}?user=${vote.created_by}`}
-										>
+											</Link>
+
 											<Button
 												variant="ghost"
 												className="flex items-center justify-between cursor-pointer w-full"
+												onClick={() =>
+													handleShare(vote.id)
+												}
 											>
-												Edit <Pencil1Icon />
+												Share <Link1Icon />
 											</Button>
-										</Link>
-
-										<Button
-											variant="ghost"
-											className="flex items-center justify-between cursor-pointer w-full"
-											onClick={() => handleShare(vote.id)}
-										>
-											Share <Link1Icon />
-										</Button>
-									</PopoverContent>
-								</Popover>
-							</TableCell>
-						</TableRow>
-					))}
-				</TableBody>
-			</Table>
-		</div>
+										</PopoverContent>
+									</Popover>
+								</TableCell>
+							</TableRow>
+						))}
+					</TableBody>
+				</Table>
+			</div>
+			{data.length === 0 && (
+				<div className="text-center w-full pt-5 space-y-8">
+					<h1 className="mb-5">
+						{"You don't any votes. Click here to create 👇 "}
+					</h1>
+					<Link href="/create">
+						<Button>Create</Button>
+					</Link>
+				</div>
+			)}
+		</>
 	);
 }

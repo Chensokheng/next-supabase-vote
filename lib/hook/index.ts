@@ -1,12 +1,7 @@
-import {
-	useQuery,
-	keepPreviousData,
-	useQueryClient,
-	useInfiniteQuery,
-} from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { createSupabaseBrower } from "../supabase/client";
 import toast from "react-hot-toast";
-import { getFromAndTo, sortObject } from "../utils";
+import { sortObject } from "../utils";
 import { IComment } from "../types";
 
 export function useGetVote(id: string) {
