@@ -4,17 +4,7 @@ import { IVote } from "@/lib/types";
 import { redirect } from "next/navigation";
 import React from "react";
 
-export default async function page({
-	params,
-	searchParams,
-}: {
-	params: { id: string };
-	searchParams?: { [key: string]: string | string[] | undefined };
-}) {
-	if (!searchParams?.id) {
-		return redirect("/404");
-	}
-
+export default async function page({ params }: { params: { id: string } }) {
 	const { data: vote } = await getVoteById(params.id);
 
 	if (!vote) {

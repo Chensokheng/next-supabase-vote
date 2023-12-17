@@ -56,7 +56,6 @@ export async function updateVotePath(id: string) {
 
 export async function getVoteById(id: string) {
 	const suapbase = await createSupabaseServer();
-
 	return await suapbase.from("vote").select("*").eq("id", id).single();
 }
 

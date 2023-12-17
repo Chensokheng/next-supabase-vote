@@ -7,7 +7,6 @@ import {
 import { GearIcon, PlusIcon } from "@radix-ui/react-icons";
 
 import Image from "next/image";
-import VoteSheet from "../VoteSheet";
 import Logout from "./Logout";
 import { User } from "@supabase/supabase-js";
 import Link from "next/link";

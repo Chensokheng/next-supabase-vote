@@ -71,7 +71,7 @@ export async function middleware(request: NextRequest) {
 			return NextResponse.redirect(new URL("/", request.url));
 		}
 	} else if (pathname.startsWith("/edit")) {
-		if (searchParams.get("id") !== data.session?.user.id) {
+		if (searchParams.get("user") !== data.session?.user.id) {
 			return NextResponse.redirect(new URL("/", request.url));
 		}
 	}

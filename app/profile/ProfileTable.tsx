@@ -170,7 +170,7 @@ export default function ProfileTable({ data }: { data: IVote[] }) {
 											</AlertDialogContent>
 										</AlertDialog>
 										<Link
-											href={`/edit/${vote.id}?id=${vote.created_by}`}
+											href={`/edit/${vote.id}?user=${vote.created_by}`}
 										>
 											<Button
 												variant="ghost"
