@@ -29,7 +29,7 @@ export default function AuthComponent() {
 					onClick={handleLoginWithGihub}
 					className="flex items-center gap-2 mx-auto"
 				>
-					<GitHubLogoIcon /> Logint with Github
+					<GitHubLogoIcon /> Login with Github
 				</Button>
 			</div>
 		</div>
