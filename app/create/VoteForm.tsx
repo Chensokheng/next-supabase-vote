@@ -66,16 +66,25 @@ export default function VoteForm() {
 	});
 
 	function addOptions() {
-		if (optionRef.current.value.trim()) {
-			form.setValue("vote_options", [
-				...options.map((option) => option.id),
-				optionRef.current.value,
-			]);
-			setOptions((options) => [
-				...options,
-				{ id: optionRef.current.value, label: optionRef.current.value },
-			]);
-			optionRef.current.value = "";
+		const newOptions = optionRef.current.value.trim();
+
+		if (newOptions) {
+			if (!form.getValues("vote_options").includes(newOptions)) {
+				form.setValue("vote_options", [
+					...options.map((option) => option.id),
+					optionRef.current.value,
+				]);
+				setOptions((options) => [
+					...options,
+					{
+						id: optionRef.current.value,
+						label: optionRef.current.value,
+					},
+				]);
+				optionRef.current.value = "";
+			} else {
+				toast.error("You can not have the same optoin.");
+			}
 		}
 	}
 
