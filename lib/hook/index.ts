@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { createSupabaseBrower } from "../supabase/client";
-import toast from "react-hot-toast";
 import { sortObject } from "../utils";
 import { IComment } from "../types";
 
@@ -10,15 +9,12 @@ export function useGetVote(id: string) {
 	return useQuery({
 		queryKey: ["vote-" + id],
 		queryFn: async () => {
-			const { data, error } = await supabase
+			const { data } = await supabase
 				.from("vote")
 				.select("*,vote_options(*),vote_log(*)")
 				.eq("id", id)
 				.single();
 
-			if (error) {
-				toast.error("Fail to fetch vote. " + error.message);
-			}
 			const voteOptions = sortObject(
 				data?.vote_options?.options as { [key: string]: number }
 			);
