@@ -88,7 +88,7 @@ export default function VoteForm() {
 		toast.promise(createVote(insertData), {
 			loading: "creating...",
 			success: "Successfully create a vote",
-			error: (err) => err.toString(),
+			error: "Fail to create vote",
 		});
 	}
 
