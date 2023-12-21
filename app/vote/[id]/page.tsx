@@ -5,20 +5,10 @@ import { createSupabaseBrower } from "@/lib/supabase/client";
 import VoteWrapper from "../components/VoteWrapper";
 import Info from "../components/Info";
 import { DEFAUTL_DESCRIPTION } from "@/lib/constant";
-
-export async function generateStaticParams() {
-	const supabase = await createSupabaseBrower();
-
-	const { data: votes } = await supabase
-		.from("vote")
-		.select("id")
-		.filter("end_date", "gte", new Date().toISOString())
-		.limit(10);
-	return votes as any;
-}
+import createSupabaseServer from "@/lib/supabase/server";
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
-	const supabase = await createSupabaseBrower();
+	const supabase = await createSupabaseServer();
 
 	const { data } = await supabase
 		.from("vote")
@@ -39,9 +29,7 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
 			title: data?.title,
 			url: url + "vote/" + data?.id,
 			siteName: "Daily Vote",
-			images:
-				url +
-				`og?author=${data?.users?.user_name}&author_url=${data?.users?.avatar_url}&title=${data?.title}`,
+
 			type: "website",
 		},
 		keywords: ["daily vote", data?.users?.user_name, "dailywebcoding"],
@@ -49,7 +37,7 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
 }
 
 export default async function Page({ params }: { params: { id: string } }) {
-	const supabase = createSupabaseBrower();
+	const supabase = await createSupabaseServer();
 
 	const { data: vote } = await supabase
 		.from("vote")
